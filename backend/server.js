@@ -10,6 +10,7 @@ app.use(cors())
 port = process.env.PORT || 3000
 
 User = require('./models/Model')
+Meal = require('./models/Model')
 
 // mongoose.connect('mongodb://127.0.0.1:27017/Userdb', function(err) {
 //     if (err) {

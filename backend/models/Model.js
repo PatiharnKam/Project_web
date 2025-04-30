@@ -37,22 +37,38 @@ var UserSchema = new Schema({
 
 var MealsSchema = new Schema({
 
-    mealName: {
+    MealName: {
         type: String,
         Required: 'Please enter'
     },
-    mealType: {
+    MealType: {
         type: String,
         Required: 'Please enter'
     },
-    calories: {
+    Protein: {
         type: Number,
         Required: 'Please enter'
     },
-    createdDate:{
-        type: Date,
-        default :Date.now
+    Carbohydrate: {
+        type: Number,
+        Required: 'Please enter'
     },
+    Fat: {
+        type: Number,
+        Required: 'Please enter'
+    },
+    Calories: {
+        type: Number,
+        Required: 'Please enter'
+    },
+    Ingredient:{
+        type: Object,
+        Required: 'Please enter'
+    },
+    Instructions:{
+        type: Array,
+        Required: 'Please enter'
+    }
 })
 
 module.exports = mongoose.model('Meals', MealsSchema, 'Meals')
