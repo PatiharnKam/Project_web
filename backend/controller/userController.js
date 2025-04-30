@@ -1,6 +1,7 @@
 'use strict'
 var mongoose = require('mongoose')
-User = mongoose.model('Users')
+User = mongoose.model('UserInfo')
+Meal = mongoose.model('Meals')
 
 exports.listAllUsers = async function(req, res){
     var query = { sort: { firstName: 1 } }
