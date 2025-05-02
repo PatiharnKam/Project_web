@@ -1,7 +1,7 @@
 <template>
     <div class="signup-page">
       <div class="left-panel">
-        <img src="../assets/fitness-image.jpg" alt="Fitness" class="fitness-image" />
+        <img src="../assets/run3.jpg" alt="Fitness" class="fitness-image" />
         <div class="overlay"></div>
       </div>
       <div class="right-panel">
@@ -121,10 +121,6 @@
   object-position: center;
   transition: transform 0.3s ease;
 }
-
-
-
-
 
 .right-panel {
   flex: 0.5;

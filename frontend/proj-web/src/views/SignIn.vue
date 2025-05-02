@@ -294,6 +294,7 @@ export default {
 }
 
 
+
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
