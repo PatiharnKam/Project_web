@@ -293,18 +293,6 @@ export default {
   object-position: center;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    45deg,
-    rgba(9, 93, 126, 0.3),
-    rgba(9, 93, 126, 0.1)
-  );
-}
 
 @media (max-width: 768px) {
   .login-container {
