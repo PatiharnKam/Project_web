@@ -1,7 +1,7 @@
 <template>
     <div class="signup-page">
       <div class="left-panel">
-        <img src="../assets/run3.jpg" alt="Fitness" class="fitness-image" />
+        <img src="../assets/run4.jpg" alt="Fitness" class="fitness-image" />
         <div class="overlay"></div>
       </div>
       <div class="right-panel">
@@ -89,7 +89,8 @@
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password)
           .then(() => {
-            alert("User created successfully!");
+            alert("Account created successfully!");
+            this.$router.push('/signin'); // Redirect to sign-in page
           })
           .catch((error) => {
             alert(error.message);
