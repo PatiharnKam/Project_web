@@ -89,7 +89,8 @@
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password)
           .then(() => {
-            alert("User created successfully!");
+            alert("Account created successfully!");
+            this.$router.push('/signin'); // Redirect to sign-in page
           })
           .catch((error) => {
             alert(error.message);
