@@ -293,6 +293,8 @@ export default {
   object-position: center;
 }
 
+
+
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
