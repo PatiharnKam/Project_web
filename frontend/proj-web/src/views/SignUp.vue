@@ -1,7 +1,7 @@
 <template>
     <div class="signup-page">
       <div class="left-panel">
-        <img src="../assets/fitness-image.jpg" alt="Fitness" class="fitness-image" />
+        <img src="../assets/run3.jpg" alt="Fitness" class="fitness-image" />
         <div class="overlay"></div>
       </div>
       <div class="right-panel">
@@ -122,10 +122,6 @@
   transition: transform 0.3s ease;
 }
 
-
-
-
-
 .right-panel {
   flex: 0.5;
   padding: 2rem;
@@ -185,7 +181,7 @@
 
 .form-input {
   width: 100%;
-  padding: 1rem 1.2rem;
+  padding: 1rem 5rem;
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.9);
   border: 2px solid rgba(9, 93, 126, 0.1);
