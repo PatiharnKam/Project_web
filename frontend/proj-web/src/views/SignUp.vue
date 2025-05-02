@@ -181,7 +181,7 @@
 
 .form-input {
   width: 100%;
-  padding: 1rem 5rem;
+  padding: 1rem 1.2rem;
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.9);
   border: 2px solid rgba(9, 93, 126, 0.1);
