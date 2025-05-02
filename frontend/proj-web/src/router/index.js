@@ -49,26 +49,23 @@ const router = createRouter({
     },
     {
         path: '/',
-        redirect: '/users'
+        redirect: '/signin'
     }
     ]
 })
 
-
 router.beforeEach((to, from, next)=>{
+    if (to.path === '/signin') {
+        next()
+        return
+    }
     const currentUser = getAuth().currentUser
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     if(requiresAuth && !currentUser){
-        console.log('You are not authorized to access this area')
-        next('signin')
-    } else if (!requiresAuth && currentUser){
-        console.log('You are authorized to access this area')
-        next('users')
+        next('/signin')
     } else {
         next()
     }
 })
-
-
 
 export default router
