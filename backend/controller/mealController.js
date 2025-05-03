@@ -1,6 +1,6 @@
 'use strict'
-var mongoose = require('mongoose')
-Meal = mongoose.model('Meals')
+const mongoose = require('mongoose');
+const Meal = require('../models/mealModel');
 
 exports.listAllMeals = async function(req, res){
     var query = { sort: { firstName: 1 } }
