@@ -34,6 +34,18 @@ var UserSchema = new Schema({
     Goal:{
         type: String,
         Required: 'Please enter'
+    },
+    BMR:{
+        type: String,
+        Required: 'Please enter'
+    },
+    TDEE:{
+        type: String,
+        Required: 'Please enter'
+    },
+    Calories_Perday:{
+        type: String,
+        Required: 'Please enter'
     }}, 
     {
     versionKey: false // 👈 ปิด __v

@@ -61,39 +61,44 @@ exports.updateAUser = async function(req, res){
 }
 
 exports.calculateBMR = function(req, res) {
-    const { gender, weight, height, age, fatPercent, formula } = req.body;
-
+    const { Gender, Weight, Height, Age, Activity, Fat_Percent, formula, Goal} = req.body;
+    let w = Number(Weight);
+    let h = Number(Height);
+    let a = Number(Age);
+    let f = Number(Fat_Percent);
     let bmr;
+    let tdee;
+    let calories_per_day;
 
     // Mifflin-St Jeor Equation
     if (formula === 'mifflin') {
-        if (gender === 'Male') {
-            bmr = 10 * weight + 6.25 * height - 5 * age + 5; // Male formula
+        if (Gender === 'Male') {
+            bmr = 10 * w + 6.25 * h - 5 * a + 5; 
         } else {
-            bmr = 10 * weight + 6.25 * height - 5 * age - 161; // Female formula
+            bmr = 10 * w + 6.25 * h - 5 * a - 161; 
         }
     }
     // Harris-Benedict Equation
     else if (formula === 'harris') {
-        if (gender === 'Male') {
-            bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+        if (Gender === 'Male') {
+            bmr = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a);
         } else {
-            bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            bmr = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
         }
     }
     // Revised Harris-Benedict Equation
     else if (formula === 'revised_harris') {
-        if (gender === 'Male') {
-            bmr = 66.5 + (13.75 * weight) + (5.003 * height) - (6.75 * age);
+        if (Gender === 'Male') {
+            bmr = 66.5 + (13.75 * w) + (5.003 * h) - (6.75 * a);
         } else {
-            bmr = 66.5 + (9.563 * weight) + (1.850 * height) - (4.676 * age);
+            bmr = 66.5 + (9.563 * w) + (1.850 * h) - (4.676 * a);
         }
     }
     // Katch-McArdle Formula (only for lean body mass calculation)
     else if (formula === 'katch_mcardle') {
-        if (fatPercent && fatPercent > 0) {
-            const leanBodyMass = weight * (1 - (fatPercent / 100)); // Calculate lean body mass
-            bmr = 370 + (21.6 * leanBodyMass); // Katch-McArdle formula
+        if (f && f > 0) {
+            const leanBodyMass = w * (1 - (f / 100)); 
+            bmr = 370 + (21.6 * leanBodyMass);
         } else {
             return res.status(400).json({ message: "Fat percentage is required for Katch-McArdle formula" });
         }
@@ -101,6 +106,34 @@ exports.calculateBMR = function(req, res) {
         return res.status(400).json({ message: "Invalid formula selected" });
     }
 
+    
+    if (Activity === 'sedentary') {
+        tdee = bmr * 1.2; 
+    }
+    else if (Activity === 'light') {
+        tdee = bmr * 1.375; 
+    } else if (Activity === 'moderate') {
+        tdee = bmr * 1.55; 
+    } else if (Activity === 'very-active') {
+        tdee = bmr * 1.725; 
+    } else if (Activity === 'super-active') {
+        tdee = bmr * 1.9; 
+    } else {
+        return res.status(400).json({ message: "Invalid activity level selected" });
+    }
+    if(Goal === 'lose-weight') {
+        calories_per_day = tdee - 500; 
+    }
+    else if(Goal === 'gain-weight') {
+        calories_per_day = tdee + 500; 
+    } else if(Goal === 'maintain-weight') {
+        calories_per_day = tdee; 
+    } else {
+        return res.status(400).json({ message: "Invalid goal selected" });
+    }
+    bmr = Math.round(bmr);
+    tdee = Math.round(tdee);
+    calories_per_day = Math.round(calories_per_day);
     // Return the BMR result
-    res.status(200).json({ bmr: bmr });
+    res.status(200).json({ bmr: bmr, tdee: tdee, calories_per_day: calories_per_day });
 }
