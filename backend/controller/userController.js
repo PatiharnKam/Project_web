@@ -69,6 +69,7 @@ exports.calculateBMR = function(req, res) {
     let bmr;
     let tdee;
     let calories_per_day;
+    let protein, carbs, fat;
 
     // Mifflin-St Jeor Equation
     if (formula === 'mifflin') {
@@ -121,19 +122,31 @@ exports.calculateBMR = function(req, res) {
     } else {
         return res.status(400).json({ message: "Invalid activity level selected" });
     }
-    if(Goal === 'lose-weight') {
-        calories_per_day = tdee - 500; 
-    }
-    else if(Goal === 'gain-weight') {
-        calories_per_day = tdee + 500; 
-    } else if(Goal === 'maintain-weight') {
+    if(Goal === 'maintain-weight') {
         calories_per_day = tdee; 
+    } else if(Goal === 'lose-fat') {
+        calories_per_day = tdee - (tdee * 0.2);
+        if (calories_per_day < bmr){
+            calories_per_day = bmr * 1.07; // Ensure not to go below BMR
+        } 
+    } else if(Goal === 'gain-muscle') {
+        calories_per_day = tdee + (tdee * 0.2); 
     } else {
         return res.status(400).json({ message: "Invalid goal selected" });
     }
     bmr = Math.round(bmr);
     tdee = Math.round(tdee);
     calories_per_day = Math.round(calories_per_day);
+    protein = Math.round(w * 2.2);
+    fat = Math.round(calories_per_day * 0.3 / 9);
+    carbs = Math.round((calories_per_day - (protein * 4) - (fat * 9)) / 4);
     // Return the BMR result
-    res.status(200).json({ bmr: bmr, tdee: tdee, calories_per_day: calories_per_day });
+    res.status(200).json({ 
+        bmr: bmr, 
+        tdee: tdee, 
+        calories_per_day: calories_per_day,
+        protein: protein,
+        carbs: carbs,
+        fat: fat
+     });
 }

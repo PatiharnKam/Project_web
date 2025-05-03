@@ -42,10 +42,9 @@
   
         <label>Goal</label>
         <select v-model="Info.Goal">
-          <option disabled value="">Select goal</option>
-          <option value="lose-weight">Lose Fat</option>
-          <option value="gain-weight">Gain Weight</option>
           <option value="maintain-weight">Maintain Weight</option>
+          <option value="lose-fat">Lose Fat</option>
+          <option value="gain-muscle">Gain Muscle</option>
         </select>
   
         <button type="submit">Calculate BMR</button>
@@ -58,6 +57,12 @@
       <div v-if ="Calories_Perday !== null" class="result">
         <h3>Following Your Goal</h3><br>
         <h3>Calories Per Day: {{ Calories_Perday }} kcal/day</h3>
+      </div>
+      <div v-if ="Protein !== null && Carbs !== null && Fat !== null " class="result">
+        <h3>Macros</h3><br>
+        <h3>Protein: {{ Protein }} g/day</h3><br>
+        <h3>Carbs: {{ Carbs }} g/day</h3><br>
+        <h3>Fat: {{ Fat }} g/day</h3><br>
       </div>
     </div>
 </template>
@@ -82,6 +87,9 @@ export default {
         BMR: null,
         TDEE: null,
         Calories_Perday: null,
+        Protein: null,
+        Carbs: null,
+        Fat: null
       };
     },
     methods: {
@@ -100,6 +108,9 @@ export default {
           this.BMR = res.data.bmr;
           this.TDEE = res.data.tdee;
           this.Calories_Perday = res.data.calories_per_day;
+          this.Protein = res.data.protein;
+          this.Carbs = res.data.carbs;
+          this.Fat = res.data.fat;
           await this.userModel();
         } catch (error) {
           alert('Error calculating BMR: ' + error.response?.data?.message || error.message);
