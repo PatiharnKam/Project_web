@@ -18,6 +18,13 @@
             </button>
           </div>
           
+          <div class="options">
+            <label class="remember-me">
+              <input type="checkbox" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" @click.prevent class="forgot-link">Forgot your password?</a>
+          </div>
           
           <button class="login-button" @click="signIn">Log in</button>
     
@@ -171,6 +178,40 @@ export default {
   opacity: 1;
 }
 
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #095D7E;
+  cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid #095D7E;
+  cursor: pointer;
+}
+
+.forgot-link {
+  color: #095D7E;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.forgot-link:hover {
+  opacity: 1;
+}
 
 .login-button {
   width: 100%;
