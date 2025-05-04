@@ -193,7 +193,7 @@ body {
     min-height: 100vh;
     width: inherit;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: rgb(231, 250, 239);
+    background-color:#E2FCD6;
     /* พื้นหลังเขียวอ่อน */
     flex-direction: row;
     padding-top: 1rem;
@@ -235,7 +235,7 @@ body {
 }
 
 h1 {
-    color: #2cb67d;
+    color: #E2FCD6;
     font-size: 2.8rem;
     text-align: center;
     margin-bottom: 2rem;
@@ -331,7 +331,7 @@ option {
 button {
     margin-top: 1rem;
     padding: 1rem 2rem;
-    background-color: #2cb67d;
+    background-color: #14967F;
     color: white;
     border: none;
     border-radius: 12px;
@@ -343,7 +343,7 @@ button {
 }
 
 button:hover {
-    background-color: #229c6b;
+    background-color: #E2FCD6;
 }
 
 /* Responsive */
