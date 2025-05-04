@@ -6,32 +6,32 @@
           <span class="title">Health</span>
           <span class="sub-text">is not valued until<br>sickness comes</span>
         </h2>
-        
         <div class="form-group">
           <input type="email" v-model="formData.email" class="form-input" placeholder="Username" />
         </div>
 
         <div class="form-group password-container">
-          <input :type="showPassword ? 'text' : 'password'" v-model="formData.password" class="form-input" placeholder="Password" />
+          <input :type="showPassword ? 'text' : 'password'" v-model="formData.password" class="form-input"
+            placeholder="Password" />
+
           <button type="button" class="toggle-password" @click="togglePassword">
             <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
           </button>
         </div>
-        
-        
         <button class="login-button" @click="signIn">Log in</button>
-  
+
         <p class="signup-text">
           Don't have an account? <router-link to="/signup">Sign up</router-link>
         </p>
-  
-        <button class="google-button">
-          <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google Logo" />
+
+        <button class="google-button" @click="signInWithGoogle">
+          <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+            alt="Google Logo" />
           Continue with Google
         </button>
+
       </div>
     </div>
-  
     <div class="right-panel">
       <img src="../assets/food1.jpg" alt="Healthy Food" class="login-image" />
       <div class="overlay"></div>
@@ -40,35 +40,47 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 export default {
-name: 'SignIn',
-data() {
-  return {
-    formData: {
-      email: '',
-      password: ''
-    },
-    showPassword: false
-  }
-},
-methods: {
-  signIn() {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, this.formData.email, this.formData.password)
-      .then(() => {
-        this.$router.push('/users');
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+  name: 'SignIn',
+  data() {
+    return {
+      formData: {
+        email: '',
+        password: ''
+      },
+      showPassword: false
+    };
   },
-  togglePassword() {
-    this.showPassword = !this.showPassword;
+  methods: {
+    signIn() {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.formData.email, this.formData.password)
+        .then(() => {
+          this.$router.push('/users');
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    },
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+    signInWithGoogle() {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          // You can also get user info with result.user
+          this.$router.push('/users');
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
   }
-}
-}
+};
 </script>
 
 <style scoped>
@@ -106,22 +118,22 @@ max-width: 400px;
 }
 
 .title {
-display: block;
-font-size: 5rem;
-font-weight: 700;
-color: #095D7E;
-margin-bottom: 0.5rem;
-text-align: left; 
+  display: block;
+  font-size: 5rem;
+  font-weight: 700;
+  color: #095D7E;
+  margin-bottom: 0.5rem;
+  text-align: left;
 }
 
 .sub-text {
-display: block;
-font-size:3rem;
-color: #095D7E;
-opacity: 0.8;
-line-height: 1.4;
-margin-bottom: 3rem;
-text-align: left; 
+  display: block;
+  font-size: 3rem;
+  color: #095D7E;
+  opacity: 0.8;
+  line-height: 1.4;
+  margin-bottom: 3rem;
+  text-align: left;
 }
 
 .form-group {
@@ -255,33 +267,33 @@ object-position: center;
 
 
 @media (max-width: 768px) {
-.login-container {
-  flex-direction: column;
-}
+  .login-container {
+    flex-direction: column;
+  }
 
-.left-panel {
-  order: 2;
-  min-width: 100%;
-  padding: 2rem 1rem;
-}
+  .left-panel {
+    order: 2;
+    min-width: 100%;
+    padding: 2rem 1rem;
+  }
 
-.right-panel {
-  order: 1;
-  height: 35vh;
-}
+  .right-panel {
+    order: 1;
+    height: 35vh;
+  }
 
-.content-wrapper {
-  width: 100%;
-}
+  .content-wrapper {
+    width: 100%;
+  }
 
-.title {
-  font-size: 2rem;
-}
+  .title {
+    font-size: 2rem;
+  }
 
-.sub-text {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-}
+  .sub-text {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
 
 }
 </style>

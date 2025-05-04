@@ -21,7 +21,7 @@ export default {
   left: 0;
   right: 0;
   height: 60px;
-  background-color: #1aa179;
+  background-color: #14967F;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -38,14 +38,26 @@ export default {
 .right-section {
   display: flex;
   align-items: center;
-  gap: 24px; /* เพิ่มช่องว่างระหว่างไอคอนให้มากขึ้น */
+  gap: 24px;
   font-size: 1.4rem;
-  cursor: pointer;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+.nav-link:hover {
+  opacity: 0.8;
 }
 
 .user-icon,
 .logout-icon {
   font-size: 1.6rem;
+  cursor: pointer;
 }
 
 .user-icon:hover,
@@ -53,7 +65,6 @@ export default {
   opacity: 0.7;
 }
 
-/* เพิ่ม margin-top ให้กับเนื้อหาหลัก */
 #app {
   margin-top: 60px;
 }
