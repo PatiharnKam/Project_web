@@ -4,6 +4,7 @@ import AddUser from "../views/AddUser.vue"
 import UpdateUser from "../views/UpdateUser.vue"
 import SignIn from "../views/SignIn.vue"
 import SignUp from "../views/SignUp.vue"
+import Cal from "../views/Cal.vue"
 import { getAuth } from "firebase/auth";
 
 const router = createRouter({
@@ -34,6 +35,11 @@ const router = createRouter({
         path: "/signup",
         name: "SignUp",
         component: SignUp
+    },
+    {
+        path: "/cal",
+        name: "Cal",
+        component: Cal
     },
     {
         path: "/updateuser/:userId",

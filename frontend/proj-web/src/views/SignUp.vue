@@ -1,32 +1,43 @@
 <template>
-  <div class="signup-page">
-    <div class="left-panel">
-      <img src="../assets/run4.jpg" alt="Fitness" class="fitness-image" />
-      <div class="overlay"></div>
-    </div>
-    <div class="right-panel">
-      <div class="signup-content">
-        <h2 class="title">Create Account</h2>
-        <p class="subtitle">Join us on your journey to better health</p>
+    <div class="signup-page">
+      <div class="left-panel">
+        <img src="../assets/run4.jpg" alt="Fitness" class="fitness-image" />
+        <div class="overlay"></div>
+      </div>
+      <div class="right-panel">
+        <div class="signup-content">
+          <h2 class="title">Create Account</h2>
+          <p class="subtitle">Join us on your journey to better health</p>
 
-        <form @submit.prevent="signUp" class="signup-form">
-          <div class="form-group">
-            <label class="form-label">Username*</label>
-            <input type="text" v-model="formData.username" class="form-input" placeholder="Enter your username" required />
-          </div>
+          <form @submit.prevent="signUp" class="signup-form">
+            <div class="form-group">
+              <label class="form-label">Username*</label>
+              <input type="text" v-model="formData.username" class="form-input" placeholder="Enter your username" required />
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Email*</label>
-            <input type="email" v-model="formData.email" class="form-input" placeholder="Enter your email" required />
-          </div>
+            <div class="form-group">
+              <label class="form-label">Email*</label>
+              <input type="email" v-model="formData.email" class="form-input" placeholder="Enter your email" required />
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Password*</label>
-            <div class="password-field">
-              <input :type="showPassword ? 'text' : 'password'" v-model="formData.password" class="form-input" placeholder="Enter your password" required />
-              <button type="button" class="toggle-password" @click="showPassword = !showPassword">
-                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-              </button>
+            <div class="form-group">
+              <label class="form-label">Password*</label>
+              <div class="password-field">
+                <input :type="showPassword ? 'text' : 'password'" v-model="formData.password" class="form-input" placeholder="Enter your password" required />
+                <button type="button" class="toggle-password" @click="showPassword = !showPassword">
+                  <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Confirm Password*</label>
+              <div class="password-field">
+                <input :type="showConfirmPassword ? 'text' : 'password'" v-model="formData.confirmPassword" class="form-input" placeholder="Confirm your password" required />
+                <button type="button" class="toggle-password" @click="showConfirmPassword = !showConfirmPassword">
+                  <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -137,17 +148,39 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-
-export default {
-  data() {
-    return {
-      formData: {
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        acceptAgreement: false,
+    
+  import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+  
+  export default {
+    data() {
+      return {
+        formData: {
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          acceptAgreement: false,
+        },
+        showPassword: false,
+        showConfirmPassword: false,
+      };
+    },
+    methods: {
+      signUp() {
+        if (this.formData.password !== this.formData.confirmPassword) {
+          alert("Passwords do not match.");
+          return;
+        }
+  
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password)
+          .then(() => {
+            alert("Account created successfully!");
+            this.$router.push('/signin'); // Redirect to sign-in page
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
       },
       showPassword: false,
       showConfirmPassword: false,
