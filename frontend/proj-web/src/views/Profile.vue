@@ -200,6 +200,7 @@ export default {
   width: 120px;
   height: 120px;
   margin: 0 auto 1.5rem;
+
   background: #095D7E;
   border-radius: 50%;
   display: flex;
@@ -255,6 +256,7 @@ export default {
 .section-header i {
   font-size: 1.8rem;
   color: #095D7E;
+
 }
 
 .section-header h2 {

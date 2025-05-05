@@ -1,127 +1,172 @@
 <template>
-<div class="health-container">
-    <div class="left">
-        <img :src="personImage" alt="Person" class="person-image" />
+  <div class="health-container">
+    <div class="calculator-content">
+      <div class="calculator-header">
+        <h1>Calculate Your Nutrition Needs</h1>
+        <p class="subtitle">Fill in your details for a personalized nutrition plan</p>
+      </div>
+
+      <form class="form" @submit.prevent="calculate">
+        <div class="form-sections">
+          <div class="form-section">
+            <h2>Basic Information</h2>
+            <div class="form-group">
+              <label for="height">Height (cm)</label>
+              <div class="input-container">
+                <input 
+                  id="height"
+                  v-model="form.height" 
+                  type="text" 
+                  inputmode="decimal" 
+                  placeholder="Enter your height" 
+                  @input="limitToTwoDecimalPlaces($event, 'height')" 
+                />
+                <div v-if="errors.height" class="error">{{ errors.height }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="weight">Weight (kg)</label>
+              <div class="input-container">
+                <input 
+                  id="weight"
+                  v-model="form.weight" 
+                  type="text" 
+                  inputmode="decimal" 
+                  placeholder="Enter your weight" 
+                  @input="limitToTwoDecimalPlaces($event, 'weight')" 
+                />
+                <div v-if="errors.weight" class="error">{{ errors.weight }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <div class="input-container">
+                <div class="gender-options">
+                  <label class="radio-label">
+                    <input type="radio" value="Male" v-model="form.gender" />
+                    <span class="radio-text">Male</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" value="Female" v-model="form.gender" />
+                    <span class="radio-text">Female</span>
+                  </label>
+                </div>
+                <div v-if="errors.gender" class="error">{{ errors.gender }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="age">Age</label>
+              <div class="input-container">
+                <input 
+                  id="age"
+                  v-model="form.age" 
+                  type="text" 
+                  inputmode="numeric" 
+                  placeholder="Enter your age" 
+                  @input="filterIntegerInput($event, 'age')" 
+                />
+                <div v-if="errors.age" class="error">{{ errors.age }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2>Fitness Details</h2>
+            <div class="form-group">
+              <label for="formula">BMR Formula</label>
+              <div class="input-container">
+                <select id="formula" v-model="form.formula" required>
+                  <option value="" disabled hidden>Select a formula</option>
+                  <option value="Mifflin-St Jeor">Mifflin-St Jeor</option>
+                  <option value="Revised Harris-Benedict">Revised Harris-Benedict</option>
+                  <option value="Katch-McArdle">Katch-McArdle</option>
+                </select>
+                <div v-if="errors.formula" class="error">{{ errors.formula }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="activity">Activity Level</label>
+              <div class="input-container">
+                <select id="activity" v-model="form.activity" required>
+                  <option value="" disabled hidden>Select your activity level</option>
+                  <option value="Sedentary">Sedentary (little or no exercise)</option>
+                  <option value="Light">Light (exercise 1-3 times/week)</option>
+                  <option value="Moderate">Moderate (exercise 4-5 times/week)</option>
+                  <option value="Very-Active">Very Active (intense exercise 6-7 times/week)</option>
+                  <option value="Extra-Active">Extra Active (very intense exercise daily)</option>
+                </select>
+                <div v-if="errors.activity" class="error">{{ errors.activity }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bodyFat">Body Fat % <span class="optional">(optional)</span></label>
+              <div class="input-container">
+                <input 
+                  id="bodyFat"
+                  v-model="form.bodyFat" 
+                  type="text" 
+                  inputmode="decimal" 
+                  placeholder="Enter your body fat percentage" 
+                  @input="limitToTwoDecimalPlaces($event, 'bodyFat')" 
+                />
+                <div v-if="errors.bodyFat" class="error">{{ errors.bodyFat }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="goal">Goal</label>
+              <div class="input-container">
+                <select id="goal" v-model="form.goal" required>
+                  <option value="" disabled hidden>Select your goal</option>
+                  <option value="maintain-weight">Maintain Weight</option>
+                  <option value="lose-fat">Lose Fat</option>
+                  <option value="gain-muscle">Gain Muscle</option>
+                </select>
+                <div v-if="errors.goal" class="error">{{ errors.goal }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-button">
+          Calculate
+          <i class="fas fa-calculator"></i>
+        </button>
+      </form>
     </div>
-    <div class="right">
-        <form class="form" @submit.prevent="calculate">
-            <div class="form-group">
-                <label>Height (cm)</label>
-                <div style="flex: 1">
-                    <input v-model="form.Height" type="text" inputmode="decimal" placeholder="Enter your height" @input="limitToTwoDecimalPlaces($event, 'height')" />
-                    <div v-if="errors.Height" class="error">{{ errors.Height }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Weight (kg)</label>
-                <div style="flex: 1">
-                    <input v-model="form.Weight" type="text" inputmode="decimal" placeholder="Enter your weight" @input="limitToTwoDecimalPlaces($event, 'weight')" />
-                    <div v-if="errors.Weight" class="error">{{ errors.Weight }}</div>
-                </div>
-            </div>
-
-            <div class="form-group horizontal-group">
-                <label class="horizontal-label">Gender</label>
-                <div style="flex: 1">
-                    <div class="gender-options">
-                        <label><input type="radio" value="Male" v-model="form.Gender" /> Male</label>
-                        <label><input type="radio" value="Female" v-model="form.Gender" /> Female</label>
-                    </div>
-                    <div v-if="errors.Gender" class="error">{{ errors.Gender }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Age</label>
-                <div style="flex: 1">
-                    <input v-model="form.Age" type="text" inputmode="numeric" placeholder="Enter your age" @input="filterIntegerInput($event, 'age')" />
-                    <div v-if="errors.Age" class="error">{{ errors.Age }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>BMR Formula</label>
-                <div style="flex: 1">
-                    <select v-model="form.formula">
-                        <option value="" disabled hidden>Select a formula</option>
-                        <option value="Mifflin-St Jeor">Mifflin-St Jeor</option>
-                        <option value="Revised Harris-Benedict">Revised Harris-Benedict</option>
-                        <option value="Katch-McArdle">Katch-McArdle</option>
-                    </select>
-                    <div v-if="errors.formula" class="error">{{ errors.formula }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Activity level</label>
-                <div style="flex: 1">
-                    <select v-model="form.Activity">
-                        <option value="" disabled hidden>Select your activity level</option>
-                        <option value="Sedentary">Sedentary (little or no exercise)</option>
-                        <option value="Light">Light (exercise 1-3 times/week)</option>
-                        <option value="Moderate">Moderate (exercise 4-5 times/week)</option>
-                        <option value="Very-Active">Very Active (intense exercise 6-7 times/week)</option>
-                        <option value="Extra-Active">Extra Active (very intense exercise daily, or physical job)</option>
-                    </select>
-                    <div v-if="errors.Activity" class="error">{{ errors.Activity }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Body Fat % (optional)</label>
-                <div style="flex: 1">
-                    <input v-model="form.bodyFat" type="text" inputmode="decimal" placeholder="Enter your body fat" @input="limitToTwoDecimalPlaces($event, 'bodyFat')" />
-                    <div v-if="errors.bodyFat" class="error">{{ errors.bodyFat }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Goal</label>
-                <div style="flex: 1">
-                    <select v-model="form.Goal">
-                        <option value="" disabled hidden>Select your goal</option>
-                        <option value="maintain-weight">Maintain Weight</option>
-                        <option value="lose-fat">Lose Fat</option>
-                        <option value="gain-muscle">Gain Muscle</option>
-                    </select>
-                    <div v-if="errors.Goal" class="error">{{ errors.Goal }}</div>
-                </div>
-            </div>
-
-            <button type="submit">Calculate</button>
-        </form>
-    </div>
-</div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
-import personImage from '../assets/person2.jpg';
 
 export default {
-  name: 'Cal',
+  name: 'HealthCalculator',
   data() {
     return {
-      personImage,
       form: {
-        Height: '',
-        Weight: '',
-        Gender: '',
-        Age: '',
+        height: '',
+        weight: '',
+        gender: '',
+        age: '',
         formula: '',
-        Activity: '',
+        activity: '',
         bodyFat: '',
-        Goal: ''
+        goal: ''
       },
       errors: {},
-      result:{
-        BMR: null,
-        TDEE: null,
-        Calories_Perday: null,
-        Protein: null,
-        Carbs: null,
-        Fat: null
+      result: {
+        bmr: null,
+        tdee: null,
+        caloriesPerDay: null,
+        protein: null,
+        carbs: null,
+        fat: null
       }
     };
   },
@@ -144,261 +189,264 @@ export default {
       event.target.value = raw;
       this.form[field] = raw;
     },
-    async calculate() {
+    validateForm() {
       this.errors = {};
 
-      if (!this.isValidTwoDecimal(this.form.Height)) this.errors.Height = 'Please enter a valid height.';
-      if (!this.isValidTwoDecimal(this.form.Weight)) this.errors.Weight = 'Please enter a valid weight.';
-      if (!this.form.Gender) this.errors.Gender = 'Please select your gender.';
-      if (!this.isPositiveInteger(this.form.Age)) this.errors.Age = 'Please enter a valid age.';
+      if (!this.isValidTwoDecimal(this.form.height)) this.errors.height = 'Please enter a valid height.';
+      if (!this.isValidTwoDecimal(this.form.weight)) this.errors.weight = 'Please enter a valid weight.';
+      if (!this.form.gender) this.errors.gender = 'Please select your gender.';
+      if (!this.isPositiveInteger(this.form.age)) this.errors.age = 'Please enter a valid age.';
       if (!this.form.formula) this.errors.formula = 'Please choose a BMR formula.';
-      if (!this.form.Activity) this.errors.Activity = 'Please select your activity level.';
-      if (!this.form.Goal) this.errors.Goal = 'Please select your goal.';
+      if (!this.form.activity) this.errors.activity = 'Please select your activity level.';
+      if (!this.form.goal) this.errors.goal = 'Please select your goal.';
+      if (this.form.bodyFat && !this.isValidTwoDecimal(this.form.bodyFat)) this.errors.bodyFat = 'Please enter a valid body fat percentage.';
 
-      if (Object.keys(this.errors).length > 0) return;
+      return Object.keys(this.errors).length === 0;
+    },
+    async calculate() {
+      if (!this.validateForm()) return;
 
       try {
-        const res = await axios.post('http://localhost:3000/users/cal', {
-          Gender: this.form.Gender,
-          Weight: this.form.Weight,
-          Height: this.form.Height,
-          Age: this.form.Age,
-          Activity: this.form.Activity,
+        const formData = {
+          Height: this.form.height,
+          Weight: this.form.weight,
+          Gender: this.form.gender,
+          Age: this.form.age,
+          formula: this.form.formula,
+          Activity: this.form.activity,
           bodyFat: this.form.bodyFat,
-          Goal: this.form.Goal,
-          formula: this.form.formula
-        });
+          Goal: this.form.goal
+        };
 
-        this.result.BMR = res.data.bmr;
-        this.result.TDEE = res.data.tdee;
-        this.result.Calories_Perday = res.data.calories_per_day;
-        this.result.Protein = res.data.protein;
-        this.result.Carbs = res.data.carbs;
-        this.result.Fat = res.data.fat;
+        const res = await axios.post('http://localhost:3000/users/cal', formData);
 
-        await this.collectInfo();
+        this.result.bmr = res.data.bmr;
+        this.result.tdee = res.data.tdee;
+        this.result.caloriesPerDay = res.data.calories_per_day;
+        this.result.protein = res.data.protein;
+        this.result.carbs = res.data.carbs;
+        this.result.fat = res.data.fat;
+
+        await this.saveUserData();
       } catch (error) {
-        alert('Error calculating BMR: ' + (error.response?.data?.message || error.message));
+        console.error('Calculation error:', error);
+        alert('Error calculating nutrition needs: ' + (error.response?.data?.message || error.message));
       }
     },
-    async collectInfo() {
+    async saveUserData() {
       try {
-        await axios.post('http://localhost:3000/users/', {
-          Gender: this.form.Gender,
-          Weight: this.form.Weight,
-          Height: this.form.Height,
-          Age: this.form.Age,
-          Activity: this.form.Activity,
+        const userData = {
+          Height: this.form.height,
+          Weight: this.form.weight,
+          Gender: this.form.gender,
+          Age: this.form.age,
+          formula: this.form.formula,
+          Activity: this.form.activity,
           bodyFat: this.form.bodyFat,
-          Goal: this.form.Goal,
-          BMR: this.result.BMR,
-          TDEE: this.result.TDEE,
-          Calories_Perday: this.result.Calories_Perday
-        });
-        await this.pushResult();
+          Goal: this.form.goal,
+          BMR: this.result.bmr,
+          TDEE: this.result.tdee,
+          Calories_Perday: this.result.caloriesPerDay
+        };
+
+        await axios.post('http://localhost:3000/users/', userData);
+        this.navigateToResults();
       } catch (error) {
-        alert('Error saving user data: ' + (error.response?.data?.message || error.message));
+        console.error('Save user data error:', error);
+        alert('Error saving your data: ' + (error.response?.data?.message || error.message));
       }
     },
-    async pushResult(){
+    navigateToResults() {
       try {
         sessionStorage.setItem('result', JSON.stringify(this.result));
-        await this.$router.push('/result');
-
-        // await this.$router.push({
-        //     name: 'Result',
-        //     query: {
-        //         result: JSON.stringify(this.result)
-        //     }
-        // });
+        this.$router.push('/result');
       } catch (error) {
-        alert('Error saving result data: ' + (error.response?.data?.message || error.message));
+        console.error('Navigation error:', error);
+        alert('Error navigating to results: ' + error.message);
       }
     }
   }
 };
 </script>
 
-
 <style scoped>
-/* ให้ body และ html ครอบคลุมเต็มหน้าจอ */
-html,
-body {
-    height: 100%;
-    margin: 0;
-}
-
 .health-container {
-    display: flex;
-    flex-wrap: wrap;
-    min-height: 100vh;
-    width: inherit;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color:#E2FCD6;
-
-    /* พื้นหลังเขียวอ่อน */
-    flex-direction: row;
-    padding-top: 1rem;
+  min-height: 100vh;
+  width: inherit;
+  background-color: #e2fcd6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.left {
-    flex: 1 1 50%;
-    padding: 0;
-    box-sizing: border-box;
-    height: 100vh;
-    display: flex;
-    justify-content: flex-start;
-    /* เปลี่ยนจาก center → flex-start */
-    align-items: stretch;
-    /* ให้รูปเต็มความสูง */
+.calculator-content {
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 20px;
+  padding: 2.5rem;
+  animation: slideIn 0.5s ease-out;
 }
 
-.person-image {
-    width: 100%;
-    height: 100%;
-    /* ให้สูงเต็มจอ */
-    object-fit: cover;
-    border-radius: 0;
-    /* ไม่ต้องมีมุมโค้ง */
-    margin: 0;
-    display: block;
-    box-shadow: none;
-    /* ลบเงาถ้าต้องการความเรียบง่าย */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.right {
-    flex: 1 1 50%;
-    padding: 2rem;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.calculator-header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-h1 {
-    color: #E2FCD6;
-    font-size: 2.8rem;
-    text-align: center;
-    margin-bottom: 2rem;
+.calculator-header h1 {
+  color: #0A5F4B;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-    width: 100%;
+.subtitle {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.form-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 5rem;
+  margin-bottom: 2rem;
+}
+
+.form-section {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .form-group {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    max-width: 500px;
-    gap: 2rem;
-    margin: 0 auto;
-    /* จัดกลาง */
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
-    font-weight: bold;
-    color: rgb(16, 91, 60);
-    font-size: 0.95rem;
-    width: 140px;
-    text-align: right;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group select {
-    flex: 1;
-    min-width: 0;
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: white;
-    font-size: 0.95rem;
+.input-container {
+  position: relative;
 }
 
-/* เปลี่ยนสี placeholder ใน input เป็นสีดำ */
-.form-group input::placeholder {
-    color: #999;
-    /* placeholder สีดำ */
+.input-container input,
+
+.input-container select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  color: #000;
 }
 
-/* เปลี่ยนสีตัวเลือกใน select เป็นสีดำ */
-select {
-    color: #000;
-    /* สีตัวเลือกใน select */
+.input-container select:invalid {
+  color: #999;
 }
 
-/* เพิ่มกรณี select ที่ไม่ได้เลือก จะมี placeholder เป็นสีดำ */
-select:has(option[value=""]:checked) {
-    color: #999;
+.input-container select option:not([value=""]) {
+  color: #000;
 }
 
-/* ปรับสีตัวเลือกใน select เมื่อเลือก */
-option {
-    color: #000;
-    /* สีของตัวเลือกใน dropdown */
-}
-
-.horizontal-group {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    max-width: 500px;
-    gap: 1rem;
-    margin: 0 auto;
-}
-
-.horizontal-label {
-    font-weight: 600;
-    color: #333;
-    font-size: 0.95rem;
-    width: 140px;
-    text-align: right;
+.input-container input:focus,
+.input-container select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 .gender-options {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
 }
 
-button {
-    margin-top: 1rem;
-    padding: 1rem 2rem;
-    background-color: #14967F;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    align-self: center;
-    transition: background 0.3s ease;
+.radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
-button:hover {
-    background-color: #E2FCD6;
+.radio-label input[type="radio"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+  width: auto;
 }
 
-/* Responsive */
+.optional {
+  color: #999;
+  font-size: 0.85rem;
+  font-weight: normal;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: #14967F;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:hover {
+  background:rgb(12, 126, 105);
+  transform: translateY(-2px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.submit-button i {
+  margin-left: 0.5rem;
+}
+
 @media (max-width: 768px) {
-
-    .left,
-    .right {
-        flex: 1 1 100%;
-        padding: 1.5rem;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
+  .form-sections {
+    grid-template-columns: 1fr;
+  }
+  
+  .calculator-content {
+    padding: 1.5rem;
+  }
+  
+  .calculator-header h1 {
+    font-size: 2rem;
+  }
 }
 </style>
