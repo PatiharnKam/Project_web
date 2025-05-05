@@ -247,11 +247,11 @@ const endHover = (event) => {
 
 .slider-dots {
   position: absolute;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 6px;
+  gap: 12px;
   z-index: 30;
 }
 

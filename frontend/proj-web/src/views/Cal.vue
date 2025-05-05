@@ -8,16 +8,16 @@
             <div class="form-group">
                 <label>Height (cm)</label>
                 <div style="flex: 1">
-                    <input v-model="form.height" type="text" inputmode="decimal" placeholder="Enter your height" @input="limitToTwoDecimalPlaces($event, 'height')" />
-                    <div v-if="errors.height" class="error">{{ errors.height }}</div>
+                    <input v-model="form.Height" type="text" inputmode="decimal" placeholder="Enter your height" @input="limitToTwoDecimalPlaces($event, 'height')" />
+                    <div v-if="errors.Height" class="error">{{ errors.Height }}</div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Weight (kg)</label>
                 <div style="flex: 1">
-                    <input v-model="form.weight" type="text" inputmode="decimal" placeholder="Enter your weight" @input="limitToTwoDecimalPlaces($event, 'weight')" />
-                    <div v-if="errors.weight" class="error">{{ errors.weight }}</div>
+                    <input v-model="form.Weight" type="text" inputmode="decimal" placeholder="Enter your weight" @input="limitToTwoDecimalPlaces($event, 'weight')" />
+                    <div v-if="errors.Weight" class="error">{{ errors.Weight }}</div>
                 </div>
             </div>
 
@@ -25,18 +25,18 @@
                 <label class="horizontal-label">Gender</label>
                 <div style="flex: 1">
                     <div class="gender-options">
-                        <label><input type="radio" value="Male" v-model="form.gender" /> Male</label>
-                        <label><input type="radio" value="Female" v-model="form.gender" /> Female</label>
+                        <label><input type="radio" value="Male" v-model="form.Gender" /> Male</label>
+                        <label><input type="radio" value="Female" v-model="form.Gender" /> Female</label>
                     </div>
-                    <div v-if="errors.gender" class="error">{{ errors.gender }}</div>
+                    <div v-if="errors.Gender" class="error">{{ errors.Gender }}</div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Age</label>
                 <div style="flex: 1">
-                    <input v-model="form.age" type="text" inputmode="numeric" placeholder="Enter your age" @input="filterIntegerInput($event, 'age')" />
-                    <div v-if="errors.age" class="error">{{ errors.age }}</div>
+                    <input v-model="form.Age" type="text" inputmode="numeric" placeholder="Enter your age" @input="filterIntegerInput($event, 'age')" />
+                    <div v-if="errors.Age" class="error">{{ errors.Age }}</div>
                 </div>
             </div>
 
@@ -56,17 +56,15 @@
             <div class="form-group">
                 <label>Activity level</label>
                 <div style="flex: 1">
-                    <select v-model="form.activity">
+                    <select v-model="form.Activity">
                         <option value="" disabled hidden>Select your activity level</option>
-                        <option value="BMR">Basal Metabolic Rate (BMR)</option>
-                        <option value="Sedentary">little or no exercise</option>
-                        <option value="Light">exercise 1-3 times/week</option>
-                        <option value="Moderate">exercise 4-5 times/week</option>
-                        <option value="Active">daily exercise or intense exercise 3-4 times/week</option>
-                        <option value="Very Active">intense exercise 6-7 times/week</option>
-                        <option value="Extra Active">very intense exercise daily, or physical job</option>
+                        <option value="Sedentary">Sedentary (little or no exercise)</option>
+                        <option value="Light">Light (exercise 1-3 times/week)</option>
+                        <option value="Moderate">Moderate (exercise 4-5 times/week)</option>
+                        <option value="Very-Active">Very Active (intense exercise 6-7 times/week)</option>
+                        <option value="Extra-Active">Extra Active (very intense exercise daily, or physical job)</option>
                     </select>
-                    <div v-if="errors.activity" class="error">{{ errors.activity }}</div>
+                    <div v-if="errors.Activity" class="error">{{ errors.Activity }}</div>
                 </div>
             </div>
 
@@ -81,13 +79,13 @@
             <div class="form-group">
                 <label>Goal</label>
                 <div style="flex: 1">
-                    <select v-model="form.goal">
+                    <select v-model="form.Goal">
                         <option value="" disabled hidden>Select your goal</option>
-                        <option value="Fat Loss">Fat Loss</option>
-                        <option value="Fat Loss & Muscle Gain">Fat Loss & Muscle Gain</option>
-                        <option value="Muscle Gain & Weight Gain">Muscle Gain & Weight Gain</option>
+                        <option value="maintain-weight">Maintain Weight</option>
+                        <option value="lose-fat">Lose Fat</option>
+                        <option value="gain-muscle">Gain Muscle</option>
                     </select>
-                    <div v-if="errors.goal" class="error">{{ errors.goal }}</div>
+                    <div v-if="errors.Goal" class="error">{{ errors.Goal }}</div>
                 </div>
             </div>
 
@@ -98,86 +96,136 @@
 </template>
 
 <script>
-import {
-    reactive
-} from 'vue';
+import axios from 'axios';
 import personImage from '../assets/person2.jpg';
 
 export default {
-    setup() {
-        const form = reactive({
-            height: '',
-            weight: '',
-            gender: '',
-            age: '',
-            formula: '',
-            activity: '',
-            bodyFat: '',
-            goal: '',
+  name: 'Cal',
+  data() {
+    return {
+        userId: null,
+        personImage,
+        form: {
+        Height: '',
+        Weight: '',
+        Gender: '',
+        Age: '',
+        formula: '',
+        Activity: '',
+        bodyFat: '',
+        Goal: ''
+      },
+      errors: {},
+      result:{
+        BMR: null,
+        TDEE: null,
+        Calories_Perday: null,
+        Protein: null,
+        Carbs: null,
+        Fat: null
+      }
+    };
+  },
+  mounted() {
+    this.userId = sessionStorage.getItem('userid');
+  },
+  methods: {
+    isValidTwoDecimal(val) {
+      return /^\d+(\.\d{1,2})?$/.test(val) && parseFloat(val) > 0;
+    },
+    isPositiveInteger(val) {
+      return /^\d+$/.test(val) && parseInt(val) > 0;
+    },
+    limitToTwoDecimalPlaces(event, field) {
+      let raw = event.target.value;
+      const match = raw.match(/^\d*\.?\d{0,2}/);
+      event.target.value = match ? match[0] : '';
+      this.form[field] = event.target.value;
+    },
+    filterIntegerInput(event, field) {
+      let raw = event.target.value.replace(/\D/g, '');
+      if (raw !== '' && parseInt(raw) === 0) raw = '';
+      event.target.value = raw;
+      this.form[field] = raw;
+    },
+    async calculate() {
+      this.errors = {};
+
+      if (!this.isValidTwoDecimal(this.form.Height)) this.errors.Height = 'Please enter a valid height.';
+      if (!this.isValidTwoDecimal(this.form.Weight)) this.errors.Weight = 'Please enter a valid weight.';
+      if (!this.form.Gender) this.errors.Gender = 'Please select your gender.';
+      if (!this.isPositiveInteger(this.form.Age)) this.errors.Age = 'Please enter a valid age.';
+      if (!this.form.formula) this.errors.formula = 'Please choose a BMR formula.';
+      if (!this.form.Activity) this.errors.Activity = 'Please select your activity level.';
+      if (!this.form.Goal) this.errors.Goal = 'Please select your goal.';
+
+      if (Object.keys(this.errors).length > 0) return;
+
+      try {
+        const res = await axios.post('http://localhost:3000/users/cal', {
+          Gender: this.form.Gender,
+          Weight: this.form.Weight,
+          Height: this.form.Height,
+          Age: this.form.Age,
+          Activity: this.form.Activity,
+          bodyFat: this.form.bodyFat,
+          Goal: this.form.Goal,
+          formula: this.form.formula
         });
 
-        const errors = reactive({});
+        this.result.BMR = res.data.bmr;
+        this.result.TDEE = res.data.tdee;
+        this.result.Calories_Perday = res.data.calories_per_day;
+        this.result.Protein = res.data.protein;
+        this.result.Carbs = res.data.carbs;
+        this.result.Fat = res.data.fat;
 
-        const isValidTwoDecimal = (val) => /^\d+(\.\d{1,2})?$/.test(val) && parseFloat(val) > 0;
-        const isPositiveInteger = (val) => /^\d+$/.test(val) && parseInt(val) > 0;
-
-        const limitToTwoDecimalPlaces = (event, field) => {
-            let raw = event.target.value;
-            const match = raw.match(/^\d*\.?\d{0,2}/);
-            event.target.value = match ? match[0] : '';
-            form[field] = event.target.value;
-        };
-
-        const filterIntegerInput = (event, field) => {
-            let raw = event.target.value.replace(/\D/g, ''); // ลบทุกอย่างที่ไม่ใช่ตัวเลข
-            if (raw !== '' && parseInt(raw) === 0) raw = ''; // ป้องกันค่า 0
-            event.target.value = raw;
-            form[field] = raw;
-        };
-
-        const calculate = () => {
-            const errors = [];
-
-            if (!isValidTwoDecimal(form.height)) {
-                errors.push('Please enter your height.');
-            }
-            if (!isValidTwoDecimal(form.weight)) {
-                errors.push('Please enter your weight.');
-            }
-            if (!form.gender) {
-                errors.push('Please select your gender.');
-            }
-            if (!form.age || !isPositiveInteger(form.age)) {
-                errors.push('Please enter your age.');
-            }
-            if (!form.formula) {
-                errors.push('Please choose a BMR calculation formula.');
-            }
-            if (!form.activity) {
-                errors.push('Please select your activity level.');
-            }
-            if (!form.goal) {
-                errors.push('Please select your goal.');
-            }
-
-            if (errors.length > 0) {
-                alert(errors.join('\n'));
-                return;
-            }
-
-        };
-
-        return {
-            form,
-            calculate,
-            personImage,
-            errors,
-            limitToTwoDecimalPlaces,
-            filterIntegerInput
-        };
+        await this.collectInfo();
+      } catch (error) {
+        alert('Error calculating BMR: ' + (error.response?.data?.message || error.message));
+      }
     },
+    async collectInfo() {
+      try {
+        await axios.post(`http://localhost:3000/users/${this.userId}`, {
+        // await axios.post('http://localhost:3000/users/', {
+          Gender: this.form.Gender,
+          Weight: this.form.Weight,
+          Height: this.form.Height,
+          Age: this.form.Age,
+          Activity: this.form.Activity,
+          bodyFat: this.form.bodyFat,
+          Goal: this.form.Goal,
+          BMR: this.result.BMR,
+          TDEE: this.result.TDEE,
+          Calories_Perday: this.result.Calories_Perday
+        });
+        console.log(this.userId)
+        alert('User data saved successfully!');
+        await this.pushResult();
+      } catch (error) {
+        alert('Error saving user data: ' + (error.response?.data?.message || error.message));
+      }
+    },
+    async pushResult(){
+      try {
+        sessionStorage.setItem('result', JSON.stringify(this.result));
+        await this.$router.push('/result');
+
+        // await this.$router.push({
+        //     name: 'Result',
+        //     query: {
+        //         result: JSON.stringify(this.result)
+        //     }
+        // });
+      } catch (error) {
+        alert('Error saving result data: ' + (error.response?.data?.message || error.message));
+      }
+    }
+  }
 };
 </script>
+
 
 <style scoped>
 /* ให้ body และ html ครอบคลุมเต็มหน้าจอ */

@@ -7,7 +7,7 @@
           <span class="sub-text">is not valued until<br>sickness comes</span>
         </h2>
         <div class="form-group">
-          <input type="email" v-model="formData.email" class="form-input" placeholder="Username" />
+          <input type="email" v-model="formData.email" class="form-input" placeholder="Email" />
         </div>
 
         <div class="form-group password-container">
@@ -41,7 +41,7 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-
+import axios from 'axios';
 export default {
   name: 'SignIn',
   data() {
@@ -57,11 +57,19 @@ export default {
     signIn() {
       const auth = getAuth();
       signInWithEmailAndPassword(auth, this.formData.email, this.formData.password)
-        .then(() => {
-          this.$router.push('/users');
+        .then(async () => {
+          const res = await axios.post('http://localhost:3000/users/signin', {
+            Email: this.formData.email,
+          });
+          console.log(res.data.id);
+          console.log(this.formData.email);
+          alert("Account created successfully!");
+          sessionStorage.setItem('userid', res.data.id);
+          // this.$router.push('/home');
         })
         .catch((error) => {
-          alert(error.message);
+          alert("Cannot fetch user ID: " + (error.response?.data?.message || error.message));
+
         });
     },
     togglePassword() {
@@ -73,7 +81,7 @@ export default {
       signInWithPopup(auth, provider)
         .then((result) => {
           // You can also get user info with result.user
-          this.$router.push('/users');
+          this.$router.push('/home');
         })
         .catch((error) => {
           alert(error.message);

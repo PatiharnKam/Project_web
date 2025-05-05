@@ -3,6 +3,10 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
 var UserSchema = new Schema({
+    Email:{
+        type: String,
+        Required: 'Please enter'
+    },
     Username: {
         type: String,
         Required: 'Please enter'
@@ -27,7 +31,7 @@ var UserSchema = new Schema({
         type: String,
         Required: 'Please enter'
     },
-    Fat_Percent:{
+    bodyFat:{
         type: Number,
         Required: 'Please enter'
     },
