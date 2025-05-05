@@ -22,6 +22,21 @@ exports.createAUser = async function(req, res){
     }
 }
 
+exports.signInUser = async function(req, res){
+  const { Email } = req.body;
+  try {
+    let user = await User.findOne({ Email: Email });
+    if (user) {
+      res.status(200).json({ id: user._id }); // ← แก้ตรงนี้
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+
 exports.readAUser = async function(req, res){
     //console.log(req.params.userId)
     try{
@@ -61,11 +76,11 @@ exports.updateAUser = async function(req, res){
 }
 
 exports.calculateBMR = function(req, res) {
-    const { Gender, Weight, Height, Age, Activity, Fat_Percent, formula, Goal} = req.body;
+    const { Gender, Weight, Height, Age, Activity, bodyFat, formula, Goal} = req.body;
     let w = Number(Weight);
     let h = Number(Height);
     let a = Number(Age);
-    let f = Number(Fat_Percent);
+    let f = Number(bodyFat);
     let bmr;
     let tdee;
     let calories_per_day;

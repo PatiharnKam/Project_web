@@ -8,6 +8,8 @@ router.route('/')
     .get(User.listAllUsers)
     .post(User.createAUser);
 
+router.route('/signin')
+    .get(User.signInUser);
 router.route('/:userId')
     .get(User.readAUser)
     .post(User.updateAUser)

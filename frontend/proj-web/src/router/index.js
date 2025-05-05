@@ -36,14 +36,6 @@ const router = createRouter({
         component: Profile
     },
     {
-        path: "/updateuser/:userId",
-        name: "UpdateUser",
-        component: UpdateUser,
-        meta: {
-            requiresAuth: true
-        }
-    },
-    {
         path: "/result",
         name: "Result",
         component: Result,
