@@ -58,12 +58,13 @@ export default {
       const auth = getAuth();
       signInWithEmailAndPassword(auth, this.formData.email, this.formData.password)
         .then(async () => {
-          const res = await axios.get('http://localhost:3000/users/signin', {
+          const res = await axios.post('http://localhost:3000/users/signin', {
             Email: this.formData.email,
           });
-          console.log(res.data);
+          console.log(res.data.id);
+          console.log(this.formData.email);
           alert("Account created successfully!");
-          sessionStorage.setItem('id', res.data.id);
+          sessionStorage.setItem('userid', res.data.id);
           // this.$router.push('/home');
         })
         .catch((error) => {

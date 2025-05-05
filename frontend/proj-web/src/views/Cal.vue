@@ -103,8 +103,9 @@ export default {
   name: 'Cal',
   data() {
     return {
-      personImage,
-      form: {
+        userId: null,
+        personImage,
+        form: {
         Height: '',
         Weight: '',
         Gender: '',
@@ -124,6 +125,9 @@ export default {
         Fat: null
       }
     };
+  },
+  mounted() {
+    this.userId = sessionStorage.getItem('userid');
   },
   methods: {
     isValidTwoDecimal(val) {
@@ -183,7 +187,8 @@ export default {
     },
     async collectInfo() {
       try {
-        await axios.post('http://localhost:3000/users/', {
+        await axios.post(`http://localhost:3000/users/${this.userId}`, {
+        // await axios.post('http://localhost:3000/users/', {
           Gender: this.form.Gender,
           Weight: this.form.Weight,
           Height: this.form.Height,
@@ -195,6 +200,8 @@ export default {
           TDEE: this.result.TDEE,
           Calories_Perday: this.result.Calories_Perday
         });
+        console.log(this.userId)
+        alert('User data saved successfully!');
         await this.pushResult();
       } catch (error) {
         alert('Error saving user data: ' + (error.response?.data?.message || error.message));

@@ -63,7 +63,6 @@ exports.deleteAUser = async function(req, res){
 }
 
 exports.updateAUser = async function(req, res){
-    //console.log(req.params.userId)
     var newUser = {}
     newUser = req.body
 

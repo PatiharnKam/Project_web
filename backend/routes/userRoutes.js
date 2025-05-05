@@ -9,7 +9,8 @@ router.route('/')
     .post(User.createAUser);
 
 router.route('/signin')
-    .get(User.signInUser);
+    .post(User.signInUser);
+    
 router.route('/:userId')
     .get(User.readAUser)
     .post(User.updateAUser)
