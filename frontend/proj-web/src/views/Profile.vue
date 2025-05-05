@@ -2,6 +2,7 @@
   <div class="profile-container">
     <div class="profile-content">
       <!-- Profile Header -->
+       <br>
       <div class="profile-header">
         <div class="profile-avatar">
           <i class="fas fa-user-circle"></i>
@@ -199,7 +200,8 @@ export default {
   width: 120px;
   height: 120px;
   margin: 0 auto 1.5rem;
-  background: #14967F;
+
+  background: #095D7E;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -253,7 +255,8 @@ export default {
 
 .section-header i {
   font-size: 1.8rem;
-  color: #14967F;
+  color: #095D7E;
+
 }
 
 .section-header h2 {
@@ -270,7 +273,7 @@ export default {
 }
 
 .info-card, .metric-card, .goal-card {
-  background: white;
+  background: rgb(242, 242, 242);
   padding: 1.5rem;
   border-radius: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -311,7 +314,7 @@ export default {
 
 .metric-icon i, .goal-icon i {
   font-size: 1.5rem;
-  color: #14967F;
+  color: #095D7E;
 }
 
 .profile-actions {
@@ -332,7 +335,7 @@ export default {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #14967F;
+  background: #095D7E;
   color: white;
 }
 
