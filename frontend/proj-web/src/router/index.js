@@ -3,6 +3,7 @@ import SignIn from "../views/SignIn.vue"
 import SignUp from "../views/SignUp.vue"
 import Cal from "../views/Cal.vue"
 import Home from "../views/Home.vue"
+import Result from "../views/Result.vue"
 import { getAuth } from "firebase/auth";
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
         path: "/cal",
         name: "Cal",
         component: Cal
+    },
+    {
+        path: "/result",
+        name: "Result",
+        component: Result,
     },
     {
         path: '/:catchAll(.*)',
