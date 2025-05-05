@@ -7,7 +7,7 @@
         <i class="fas fa-fire"></i>
         <div class="card-content">
           <label>BMR (Basal Metabolic Rate)</label>
-          <div class="value-box">{{ result.BMR }} kcal</div>
+          <div class="value-box">{{ result.bmr }} kcal</div>
         </div>
       </div>
   
@@ -15,7 +15,7 @@
         <i class="fas fa-running"></i>
         <div class="card-content">
           <label>TDEE (Total Daily Energy Expenditure)</label>
-          <div class="value-box">{{ result.TDEE }} kcal</div>
+          <div class="value-box">{{ result.tdee }} kcal</div>
         </div>
       </div>
     </div>
@@ -26,17 +26,17 @@
         <div class="macro-box">
           <i class="fas fa-drumstick-bite"></i>
           <p>Protein</p>
-          <div class="macro-value">{{ result.Protein }} g</div>
+          <div class="macro-value">{{ result.protein }} g</div>
         </div>
         <div class="macro-box">
           <i class="fas fa-cheese"></i>
           <p>Fat</p>
-          <div class="macro-value">{{ result.Fat }} g</div>
+          <div class="macro-value">{{ result.fat }} g</div>
         </div>
         <div class="macro-box">
           <i class="fas fa-bread-slice"></i>
           <p>Carbohydrate</p>
-          <div class="macro-value">{{ result.Carbs }} g</div>
+          <div class="macro-value">{{ result.carbs }} g</div>
         </div>
       </div>
     </div>
@@ -103,12 +103,12 @@ export default {
   data() {
     return {
       result: {
-        BMR: null,
-        TDEE: null,
-        Calories_Perday: null,
-        Protein: null,
-        Carbs: null,
-        Fat: null
+        bmr: null,
+        tdee: null,
+        caloriesPerDay: null,
+        protein: null,
+        carbs: null,
+        fat: null
       }
     };
   },
