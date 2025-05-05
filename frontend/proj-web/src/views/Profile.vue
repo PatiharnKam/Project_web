@@ -270,7 +270,7 @@ export default {
 }
 
 .info-card, .metric-card, .goal-card {
-  background: white;
+  background: rgb(242, 242, 242);
   padding: 1.5rem;
   border-radius: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
