@@ -242,7 +242,6 @@ body {
     width: inherit;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color:#E2FCD6;
-
     /* พื้นหลังเขียวอ่อน */
     flex-direction: row;
     padding-top: 1rem;

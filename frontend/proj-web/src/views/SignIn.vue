@@ -69,6 +69,7 @@ export default {
         })
         .catch((error) => {
           alert("Cannot fetch user ID: " + (error.response?.data?.message || error.message));
+
         });
     },
     togglePassword() {
