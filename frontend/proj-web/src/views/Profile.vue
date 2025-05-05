@@ -8,37 +8,37 @@
       <div class="form">
         <div class="form-group">
           <label>Username</label>
-          <p>{{ form.username }}</p>
+          <p>{{ form.username || '-' }}</p>
         </div>
 
         <div class="form-group">
           <label>Height (cm)</label>
-          <p>{{ form.height }}</p>
+          <p>{{ form.height || '-' }}</p>
         </div>
 
         <div class="form-group">
           <label>Weight (kg)</label>
-          <p>{{ form.weight }}</p>
+          <p>{{ form.weight || '-' }}</p>
         </div>
 
         <div class="form-group">
           <label>Gender</label>
-          <p>{{ form.gender }}</p>
+          <p>{{ form.gender || '-' }}</p>
         </div>
 
         <div class="form-group">
           <label>Age</label>
-          <p>{{ form.age }}</p>
+          <p>{{ form.age || '-' }}</p>
         </div>
 
         <div class="form-group">
           <label>BMR Formula</label>
-          <p>{{ form.formula }}</p>
+          <p>{{ form.formula || '-' }}</p>
         </div>
 
         <div class="form-group">
           <label>Activity level</label>
-          <p>{{ form.activity }}</p>
+          <p>{{ form.activity || '-' }}</p>
         </div>
 
         <div class="form-group">
@@ -48,7 +48,7 @@
 
         <div class="form-group">
           <label>Goal</label>
-          <p>{{ form.goal }}</p>
+          <p>{{ form.goal || '-' }}</p>
         </div>
 
         <div class="form-button">
