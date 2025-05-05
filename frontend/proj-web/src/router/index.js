@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from "vue-router"
 import SignIn from "../views/SignIn.vue"
 import SignUp from "../views/SignUp.vue"
 import Cal from "../views/Cal.vue"
+import Profile from "../views/Profile.vue"
 import Home from "../views/Home.vue"
 import Result from "../views/Result.vue"
 import { getAuth } from "firebase/auth";
@@ -28,6 +29,19 @@ const router = createRouter({
         path: "/cal",
         name: "Cal",
         component: Cal
+    },
+    {
+        path: "/profile/:userId",
+        name: "Profile",
+        component: Profile
+    },
+    {
+        path: "/updateuser/:userId",
+        name: "UpdateUser",
+        component: UpdateUser,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: "/result",
