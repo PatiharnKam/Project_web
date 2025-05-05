@@ -1,59 +1,114 @@
 <template>
-  <div class="health-container">
-    <div class="left">
-      <img :src="personImage" alt="Person" class="person-image" />
-    </div>
+  <div class="profile-container">
+    <div class="profile-content">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h1>{{ form.username || 'User Profile' }}</h1>
+        <p class="subtitle">View and manage your health information</p>
+      </div>
 
-    <div class="right">
-      <div class="form">
-        <div class="form-group">
-          <label>Username</label>
-          <p>{{ form.username || '-' }}</p>
+      <div class="profile-sections">
+        <!-- Personal Information -->
+        <div class="profile-section" data-aos="fade-up">
+          <div class="section-header">
+            <i class="fas fa-user"></i>
+            <h2>Personal Information</h2>
+          </div>
+          <div class="info-grid">
+            <div class="info-card">
+              <span class="info-label">Username</span>
+              <span class="info-value">{{ form.username || '-' }}</span>
+            </div>
+            <div class="info-card">
+              <span class="info-label">Age</span>
+              <span class="info-value">{{ form.age || '-' }} years</span>
+            </div>
+            <div class="info-card">
+              <span class="info-label">Gender</span>
+              <span class="info-value">{{ form.gender || '-' }}</span>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Height (cm)</label>
-          <p>{{ form.height || '-' }}</p>
+        <!-- Physical Metrics -->
+        <div class="profile-section" data-aos="fade-up" data-aos-delay="100">
+          <div class="section-header">
+            <i class="fas fa-ruler-combined"></i>
+            <h2>Physical Metrics</h2>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-ruler-vertical"></i>
+              </div>
+              <div class="metric-info">
+                <span class="metric-label">Height</span>
+                <span class="metric-value">{{ form.height || '-' }}</span>
+                <span class="metric-unit">cm</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-weight"></i>
+              </div>
+              <div class="metric-info">
+                <span class="metric-label">Weight</span>
+                <span class="metric-value">{{ form.weight || '-' }}</span>
+                <span class="metric-unit">kg</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <i class="fas fa-percentage"></i>
+              </div>
+              <div class="metric-info">
+                <span class="metric-label">Body Fat</span>
+                <span class="metric-value">{{ form.bodyFat || '-' }}</span>
+                <span class="metric-unit">%</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Weight (kg)</label>
-          <p>{{ form.weight || '-' }}</p>
+        <!-- Fitness Goals -->
+        <div class="profile-section" data-aos="fade-up" data-aos-delay="200">
+          <div class="section-header">
+            <i class="fas fa-bullseye"></i>
+            <h2>Fitness Goals</h2>
+          </div>
+          <div class="goals-grid">
+            <div class="goal-card">
+              <div class="goal-icon">
+                <i class="fas fa-running"></i>
+              </div>
+              <div class="goal-info">
+                <span class="goal-label">Activity Level</span>
+                <span class="goal-value">{{ form.activity || '-' }}</span>
+              </div>
+            </div>
+
+            <div class="goal-card">
+              <div class="goal-icon">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="goal-info">
+                <span class="goal-label">Goal</span>
+                <span class="goal-value">{{ form.goal || '-' }}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Gender</label>
-          <p>{{ form.gender || '-' }}</p>
-        </div>
-
-        <div class="form-group">
-          <label>Age</label>
-          <p>{{ form.age || '-' }}</p>
-        </div>
-
-        <div class="form-group">
-          <label>BMR Formula</label>
-          <p>{{ form.formula || '-' }}</p>
-        </div>
-
-        <div class="form-group">
-          <label>Activity level</label>
-          <p>{{ form.activity || '-' }}</p>
-        </div>
-
-        <div class="form-group">
-          <label>Body Fat %</label>
-          <p>{{ form.bodyFat || '-' }}</p>
-        </div>
-
-        <div class="form-group">
-          <label>Goal</label>
-          <p>{{ form.goal || '-' }}</p>
-        </div>
-
-        <div class="form-button">
-          <button class="edit-button">
-            <i class="fas fa-edit"></i>Edit
+        <!-- Action Buttons -->
+        <div class="profile-actions" data-aos="fade-up" data-aos-delay="300">
+          <button class="recalculate-button" @click="recalculateMetrics">
+            <i class="fas fa-redo"></i>
+            Recalculate
           </button>
         </div>
       </div>
@@ -63,19 +118,16 @@
 
 <script>
 import axios from 'axios';
-import personImage from '../assets/person6.jpg';
 
 export default {
   data() {
     return {
-      personImage,
       form: {
         username: '',
         height: '',
         weight: '',
         gender: '',
         age: '',
-        formula: '',
         activity: '',
         bodyFat: '',
         goal: '',
@@ -84,9 +136,12 @@ export default {
   },
   mounted() {
     const userId = this.$route.params.userId;
-    axios
-      .get(`http://localhost:3000/users/${userId}`)
-      .then((res) => {
+    this.fetchUserData(userId);
+  },
+  methods: {
+    async fetchUserData(userId) {
+      try {
+        const res = await axios.get(`http://localhost:3000/users/${userId}`);
         const data = res.data;
         this.form.username = data.Username;
         this.form.height = data.Height;
@@ -96,140 +151,232 @@ export default {
         this.form.activity = data.Activity;
         this.form.bodyFat = data.Fat_Percent;
         this.form.goal = data.Goal;
-        this.form.formula = data.Formula || '-';
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error('Error fetching user data:', err);
-      });
+      }
+    },
+    recalculateMetrics() {
+      this.$router.push('/cal');
+    }
   },
 };
 </script>
 
 <style scoped>
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
-
-.health-container {
-  display: flex;
-  flex-wrap: wrap;
+.profile-container {
   min-height: 100vh;
-  width: inherit;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #e2fcd6;
-  flex-direction: row;
-  padding-top: 1rem;
-}
-
-.left {
-  flex: 1 1 50%;
-  padding: 0;
-  box-sizing: border-box;
-  height: 100vh;
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-}
-
-.person-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
+  width: 100vw;
   margin: 0;
-  display: block;
-  box-shadow: none;
-}
-
-.right {
-  flex: 1 1 50%;
+  background: linear-gradient(135deg, #E2FCD6 0%, #c9f5b6 100%);
   padding: 2rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  width: 100%;
-}
-
-.form-group {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: 500px;
-  gap: 2rem;
+.profile-content {
+  max-width: 1200px;
   margin: 0 auto;
+  animation: fadeIn 0.6s ease-out;
 }
 
-.form-group label {
-  font-weight: bold;
-  color: rgb(16, 91, 60);
-  font-size: 0.95rem;
-  width: 140px;
-  text-align: right;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.form-group p {
-  flex: 1;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.7rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 0.95rem;
-  margin: 0;
-  min-height: 40px;
+.profile-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-top: 2rem;
 }
 
-.form-button {
-  max-width: 500px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0rem;
-}
-
-.edit-button {
-  margin-top: 0rem;
-  padding: 0.5rem 1.5rem;
-  background-color: rgb(60, 154, 230);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  background: #14967F;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  transition: background 0.3s ease;
+  justify-content: center;
 }
 
-.edit-button:hover {
-  background-color: rgb(37, 131, 208);
+.profile-avatar i {
+  font-size: 4rem;
+  color: white;
 }
 
-.edit-button i {
+.profile-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0A5F4B;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #666;
   font-size: 1.2rem;
 }
 
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #E2FCD6;
+}
+
+.section-header i {
+  font-size: 1.8rem;
+  color: #14967F;
+}
+
+.section-header h2 {
+  color: #0A5F4B;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.info-grid, .metrics-grid, .goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-card, .metric-card, .goal-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.info-card:hover, .metric-card:hover, .goal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-label, .metric-label, .goal-label {
+  display: block;
+  color: #666;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.info-value, .metric-value, .goal-value {
+  display: block;
+  color: #0A5F4B;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.metric-icon, .goal-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(20, 150, 127, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.metric-icon i, .goal-icon i {
+  font-size: 1.5rem;
+  color: #14967F;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.recalculate-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #14967F;
+  color: white;
+}
+
+.recalculate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 150, 127, 0.2);
+}
+
 @media (max-width: 768px) {
-  .left,
-  .right {
-    flex: 1 1 100%;
+  .profile-container {
+    padding: 1rem;
+  }
+
+  .profile-header {
+    margin-bottom: 2rem;
+  }
+
+  .profile-header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .profile-section {
     padding: 1.5rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .info-grid, .metrics-grid, .goals-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .recalculate-button {
+    width: 100%;
   }
 }
 </style>

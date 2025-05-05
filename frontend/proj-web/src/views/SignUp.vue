@@ -137,6 +137,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default {
@@ -164,6 +165,10 @@ export default {
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password)
         .then(() => {
+          const res = axios.post('http://localhost:3000/users/', {
+            Username: this.formData.username,
+            Email: this.formData.email,
+          });
           alert("Account created successfully!");
           this.$router.push('/signin'); // Redirect to sign-in page
         })

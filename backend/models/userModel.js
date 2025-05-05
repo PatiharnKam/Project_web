@@ -3,6 +3,10 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
 var UserSchema = new Schema({
+    Email:{
+        type: String,
+        Required: 'Please enter'
+    },
     Username: {
         type: String,
         Required: 'Please enter'
