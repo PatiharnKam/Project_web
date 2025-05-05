@@ -22,7 +22,7 @@ export default {
     const router = useRouter();
 
     // ซ่อน Navbar ในหน้า signin หรือ register
-    const hideNavbarRoutes = ['/signin', '/signup'];
+    const hideNavbarRoutes = ['/signin', '/signup','/home'];
     const showNavbar = computed(() => !hideNavbarRoutes.includes(route.path));
 
     const logout = () => {

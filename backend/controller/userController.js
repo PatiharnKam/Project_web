@@ -72,23 +72,15 @@ exports.calculateBMR = function(req, res) {
     let protein, carbs, fat;
 
     // Mifflin-St Jeor Equation
-    if (formula === 'mifflin') {
+    if (formula === 'Mifflin-St Jeor') {
         if (Gender === 'Male') {
             bmr = 10 * w + 6.25 * h - 5 * a + 5; 
         } else {
             bmr = 10 * w + 6.25 * h - 5 * a - 161; 
         }
     }
-    // Harris-Benedict Equation
-    else if (formula === 'harris') {
-        if (Gender === 'Male') {
-            bmr = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a);
-        } else {
-            bmr = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
-        }
-    }
     // Revised Harris-Benedict Equation
-    else if (formula === 'revised_harris') {
+    else if (formula === 'Revised Harris-Benedict') {
         if (Gender === 'Male') {
             bmr = 66.5 + (13.75 * w) + (5.003 * h) - (6.75 * a);
         } else {
@@ -96,7 +88,7 @@ exports.calculateBMR = function(req, res) {
         }
     }
     // Katch-McArdle Formula (only for lean body mass calculation)
-    else if (formula === 'katch_mcardle') {
+    else if (formula === 'Katch-McArdle') {
         if (f && f > 0) {
             const leanBodyMass = w * (1 - (f / 100)); 
             bmr = 370 + (21.6 * leanBodyMass);
@@ -108,16 +100,16 @@ exports.calculateBMR = function(req, res) {
     }
 
     
-    if (Activity === 'sedentary') {
+    if (Activity === 'Sedentary') {
         tdee = bmr * 1.2; 
     }
-    else if (Activity === 'light') {
+    else if (Activity === 'Light') {
         tdee = bmr * 1.375; 
-    } else if (Activity === 'moderate') {
+    } else if (Activity === 'Moderate') {
         tdee = bmr * 1.55; 
-    } else if (Activity === 'very-active') {
+    } else if (Activity === 'Very-Active') {
         tdee = bmr * 1.725; 
-    } else if (Activity === 'super-active') {
+    } else if (Activity === 'Extra-Active') {
         tdee = bmr * 1.9; 
     } else {
         return res.status(400).json({ message: "Invalid activity level selected" });

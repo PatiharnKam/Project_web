@@ -27,7 +27,7 @@ var UserSchema = new Schema({
         type: String,
         Required: 'Please enter'
     },
-    Fat_Percent:{
+    bodyFat:{
         type: Number,
         Required: 'Please enter'
     },
