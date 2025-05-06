@@ -1,5 +1,11 @@
 <template>
   <div class="profile-container">
+    <div v-if="loading" class="loading-overlay">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading...</span>
+      </div>
+    </div>
     <div class="profile-content">
       <!-- Profile Header -->
        <br>
@@ -107,9 +113,10 @@
 
         <!-- Action Buttons -->
         <div class="profile-actions" data-aos="fade-up" data-aos-delay="300">
-          <button class="recalculate-button" @click="recalculateMetrics">
-            <i class="fas fa-redo"></i>
-            Recalculate
+          <button class="recalculate-button" @click="recalculateMetrics" :disabled="loading">
+            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+            <i v-else class="fas fa-redo"></i>
+            {{ loading ? 'Loading...' : 'Recalculate' }}
           </button>
         </div>
       </div>
@@ -133,33 +140,61 @@ export default {
         bodyFat: '',
         goal: '',
       },
+      loading: false,
+      error: null
     };
   },
-  mounted() {
+  async mounted() {
     const userId = this.$route.params.userId;
-    this.fetchUserData(userId);
+    await this.fetchUserData(userId);
   },
   methods: {
     async fetchUserData(userId) {
+      this.loading = true;
+      this.error = null;
       try {
         const res = await axios.get(`http://localhost:3000/users/${userId}`);
         const data = res.data;
-        this.form.username = data.Username;
-        this.form.height = data.Height;
-        this.form.weight = data.Weight;
-        this.form.gender = data.Gender;
-        this.form.age = data.Age;
-        this.form.activity = data.Activity;
-        this.form.bodyFat = data.Fat_Percent;
-        this.form.goal = data.Goal;
-      } catch (err) {
-        console.error('Error fetching user data:', err);
+        
+        // Update form data with user information
+        this.form = {
+          username: data.Username || '',
+          height: data.Height || '',
+          weight: data.Weight || '',
+          gender: data.Gender || '',
+          age: data.Age || '',
+          activity: data.Activity || '',
+          bodyFat: data.Fat_Percent || '',
+          goal: data.Goal || ''
+        };
+      } catch (error) {
+        this.error = error.response?.data?.message || 'Error fetching user data';
+        console.error('Error fetching user data:', error);
+      } finally {
+        this.loading = false;
       }
     },
-    recalculateMetrics() {
-      this.$router.push('/cal');
+    async recalculateMetrics() {
+      this.loading = true;
+      try {
+        await this.$router.push('/cal');
+      } catch (error) {
+        console.error('Navigation error:', error);
+      } finally {
+        this.loading = false;
+      }
     }
   },
+  watch: {
+    '$route.params.userId': {
+      async handler(newUserId) {
+        if (newUserId) {
+          await this.fetchUserData(newUserId);
+        }
+      },
+      immediate: true
+    }
+  }
 };
 </script>
 
@@ -342,6 +377,38 @@ export default {
 .recalculate-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(20, 150, 127, 0.2);
+}
+
+.recalculate-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #095D7E;
+}
+
+.loading-spinner i {
+  font-size: 2rem;
 }
 
 @media (max-width: 768px) {

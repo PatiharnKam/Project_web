@@ -193,19 +193,27 @@ export default {
 };
 </script>
 
+
 <style scoped>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+
 .signup-page {
-display: flex;
-height: 100vh;
-width: 100vw;
-font-family: 'Arial', sans-serif;
-overflow: hidden;
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  font-family: 'Arial', sans-serif;
+  overflow-x: hidden;
 }
 
 .left-panel {
-flex: 0.5;
-position: relative;
-overflow: hidden;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
 }
 
 .fitness-image {
@@ -217,13 +225,13 @@ transition: transform 0.3s ease;
 }
 
 .right-panel {
-flex: 0.5;
-padding: 2rem;
-background-color: #ccecee;
-display: flex;
-align-items: center;
-justify-content: center;
-position: relative;
+  flex: 1;
+  padding: 2rem;
+  background-color: #ccecee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .right-panel::before {
@@ -556,45 +564,23 @@ color: #074b65;
 }
 
 @media (max-width: 768px) {
-.signup-page {
-  flex-direction: column;
-}
+  .signup-page {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+  }
 
-.left-panel {
-  flex: 0;
-  height: 35vh;
-}
+  .right-panel {
+    order: 2;
+    width: 100%;
+    padding: 2rem 1rem;
+    min-height: 65vh;
+  }
 
-.right-panel {
-  flex: 1;
-  padding: 2rem 1.5rem;
-}
-
-.title {
-  font-size: 2rem;
-}
-
-.subtitle {
-  font-size: 1rem;
-}
-
-.modal-content {
-  width: 95%;
-  max-height: 95vh;
-}
-
-.modal-body {
-  max-height: calc(95vh - 140px);
-}
-
-.modal-footer {
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.accept-btn,
-.decline-btn {
-  width: 100%;
-}
+  .left-panel {
+    order: 1;
+    width: 100%;
+    height: 35vh;
+  }
 }
 </style>
