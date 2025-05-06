@@ -159,7 +159,8 @@ export default {
             activeSection: null
         };
     },
-    computed: {
+    created() {
+      this.fetchUserData();
     },
     mounted() {
         requestAnimationFrame(() => {
@@ -245,6 +246,26 @@ export default {
                     }
                 });
             }, 100);
+        },
+        async fetchUserData() {
+        try {
+            const userId = sessionStorage.getItem('userid');
+            const res = await axios.get(`http://localhost:3000/users/${userId}`);
+            const data = res.data;
+
+            this.form = {
+                height: data.Height || '',
+                weight: data.Weight || '',
+                gender: data.Gender || '',
+                age: data.Age || '',
+                formula: data.formula || '',
+                activity: data.Activity || '',
+                bodyFat: data.bodyFat || '',
+                goal: data.Goal || ''
+            };
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
         },
         async calculate() {
             if (!this.validateForm()) return;

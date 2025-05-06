@@ -153,6 +153,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
+        
         const res = await axios.get(`http://localhost:3000/users/${userId}`);
         const data = res.data;
         
