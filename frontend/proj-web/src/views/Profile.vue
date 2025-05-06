@@ -164,7 +164,7 @@ export default {
           gender: data.Gender || '',
           age: data.Age || '',
           activity: data.Activity || '',
-          bodyFat: data.Fat_Percent || '',
+          bodyFat: data.bodyFat || '',
           goal: data.Goal || ''
         };
       } catch (error) {
