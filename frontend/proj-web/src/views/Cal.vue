@@ -299,7 +299,6 @@ export default {
                   await this.saveUserData();
                 }
                 this.navigateToResults();
-
             } catch (error) {
                 console.error('Calculation error:', error);
                 alert('Error calculating nutrition needs: ' + (error.response && error.response.data ? error.response.data.message : error.message));
