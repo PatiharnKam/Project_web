@@ -1,47 +1,46 @@
 <template>
-  <div class="home-container bg-[#ccecee]">
-    <!-- Hero Section with Full Width Slider -->
+  <div class="home-container">
     <section class="hero-section">
-      <!-- Image Slider -->
-      <div class="slider-container">
-        <div class="slider-content">
-          <button class="nav-button prev" @click="prevSlide">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          
-          <div class="image-container">
-            <img 
-              :src="images[currentIndex]" 
-              :alt="'Slide ' + (currentIndex + 1)"
-              class="slider-image"
-            />
-            <div class="image-overlay"></div>
-          </div>
-          
-          <button class="nav-button next" @click="nextSlide">
-            <i class="fas fa-chevron-right"></i>
-          </button>
+      <vueper-slides
+        class="slider-container"
+        :bullets="true"
+        :infinite="true"
+        :fade="false"
+        :bullets-outside="false"
+        :touch-dragging="false"
+        bullets-position="bottom"
+        :arrows="true"
+        :duration="3000"
+        :delay="3000"
+        autoplay
+        @autoplay-pause="handleAutoplayPause"
+        @autoplay-resume="handleAutoplayResume"
+      >
+        <vueper-slide
+          v-for="(image, i) in images"
+          :key="i"
+          :image="image"
+          :title="titles[i]"
+        >
+          <template v-slot:content>
+            <div class="hero-text-overlay" :class="{ 'fade-in': true }">
+              <div class="main-title">
+                <span class="welcome-text">Welcome to</span>
+                <span class="brand-name">HealthHelp</span>
+              </div>
+              <p class="tagline">Start your journey to a healthier lifestyle</p>
+            </div>
+          </template>
+        </vueper-slide>
 
-          <!-- Centered Text Over Slider -->
-          <div class="hero-text-overlay">
-            <h1 class="main-title">
-              <span class="welcome-text">Welcome to</span>
-              <span class="brand-name">HealthHelp</span>
-            </h1>
-            <p class="tagline">Your journey to a healthier lifestyle starts here</p>
-          </div>
+        <template v-slot:arrow-left>
+          <i class="fas fa-chevron-left"></i>
+        </template>
 
-          <!-- Dots -->
-          <div class="slider-dots">
-            <button
-              v-for="(_, index) in images"
-              :key="index"
-              @click="currentIndex = index"
-              :class="['dot', { active: currentIndex === index }]"
-            ></button>
-          </div>
-        </div>
-      </div>
+        <template v-slot:arrow-right>
+          <i class="fas fa-chevron-right"></i>
+        </template>
+      </vueper-slides>
     </section>
 
     <!-- Features Section -->
@@ -76,43 +75,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref } from 'vue'
+import { VueperSlides, VueperSlide } from 'vueperslides'
+import 'vueperslides/dist/vueperslides.css'
 
+const currentSlide = ref(0)
 const images = [
   new URL('../assets/run4.jpg', import.meta.url).href,
   new URL('../assets/food1.jpg', import.meta.url).href,
   new URL('../assets/run2.jpg', import.meta.url).href,
-  new URL('../assets/run3.jpg', import.meta.url).href,
-];
+  new URL('../assets/run3.jpg', import.meta.url).href
+]
 
-const currentIndex = ref(0);
-let intervalId = null;
+const titles = [
+  'Transform Your Life',
+  'Healthy Eating Habits',
+  'Track Your Progress',
+  'Achieve Your Goals'
+]
 
-const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % images.length;
-};
+const handleAutoplayPause = () => {
+  // Handle autoplay pause if needed
+}
 
-const prevSlide = () => {
-  currentIndex.value = (currentIndex.value - 1 + images.length) % images.length;
-};
-
-onMounted(() => {
-  intervalId = setInterval(nextSlide, 5000);
-});
-
-onBeforeUnmount(() => {
-  if (intervalId) clearInterval(intervalId);
-});
-
-const startHover = (event) => {
-  const card = event.currentTarget;
-  card.style.transform = 'translateY(-10px)';
-};
-
-const endHover = (event) => {
-  const card = event.currentTarget;
-  card.style.transform = 'translateY(0)';
-};
+const handleAutoplayResume = () => {
+  // Handle autoplay resume if needed
+}
 </script>
 
 <style scoped>
@@ -133,36 +121,86 @@ const endHover = (event) => {
 .slider-container {
   width: 100%;
   height: 100%;
-  position: relative;
 }
 
-.slider-content {
-  width: 100%;
-  height: 100%;
-  position: relative;
+/* Customize Vueper Slides */
+:deep(.vueperslides) {
+  height: 100vh !important;
 }
 
-.image-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
+/* Customize dots navigation */
+:deep(.vueperslides__bullets) {
+  bottom: 20px !important;
+  top: auto !important;
+  z-index: 10 !important;
+  padding: 8px;
+  border-radius: 50px;
+  background: transparent;
 }
 
-.slider-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+:deep(.vueperslides__bullet) {
+  width: 12px !important;
+  height: 12px !important;
+  margin: 0 6px !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+  opacity: 1 !important;
 }
 
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+:deep(.vueperslides__bullet--active) {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  transform: scale(1.2) !important;
+}
+
+:deep(.vueperslides__track-inner) {
+  height: 100vh !important;
+}
+
+:deep(.vueperslides__parallax-wrapper) {
+  padding-top: 0 !important;
+  height: 100vh !important;
+}
+
+:deep(.vueperslide) {
+  background-color: black;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+    z-index: 1;
+  }
+}
+
+:deep(.vueperslide__image) {
+  opacity: 0.9;
+}
+
+/* Customize arrow navigation */
+:deep(.vueperslides__arrow) {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  width: 50px !important;
+  height: 50px !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:deep(.vueperslides__arrow:hover) {
+  background: rgba(255, 255, 255, 0.5) !important;
+  transform: scale(1.1) !important;
+}
+
+:deep(.vueperslides__arrow i) {
+  font-size: 1.5rem !important;
 }
 
 .hero-text-overlay {
@@ -171,9 +209,15 @@ const endHover = (event) => {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  z-index: 20;
+  z-index: 2;
   width: 100%;
   padding: 0 20px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hero-text-overlay.fade-in {
+  opacity: 1;
 }
 
 .main-title {
@@ -188,6 +232,7 @@ const endHover = (event) => {
   color: white;
   font-weight: 500;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  animation: slideInDown 0.8s ease;
 }
 
 .brand-name {
@@ -196,6 +241,7 @@ const endHover = (event) => {
   color: white;
   letter-spacing: -1px;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  animation: slideInUp 0.8s ease 0.2s both;
 }
 
 .tagline {
@@ -203,62 +249,7 @@ const endHover = (event) => {
   color: white;
   margin-top: 1rem;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-}
-
-.nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 30;
-}
-
-.nav-button:hover {
-  background: white;
-  transform: translateY(-50%) scale(1.1);
-}
-
-.prev {
-  left: 30px;
-}
-
-.next {
-  right: 30px;
-}
-
-.slider-dots {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-  z-index: 30;
-}
-
-.dot {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-}
-
-.dot.active {
-  background: rgba(255, 255, 255, 0.9);
-  transform: scale(1.2);
+  animation: fadeIn 0.8s ease 0.4s both;
 }
 
 .features-section {
@@ -353,6 +344,37 @@ const endHover = (event) => {
   transform: translateX(4px);
 }
 
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-section {
     height: 90vh;
@@ -383,7 +405,6 @@ const endHover = (event) => {
   .icon-wrapper {
     width: 80px;
     height: 80px;
-    margin-bottom: 1.5rem;
   }
 
   .icon-wrapper i {
@@ -394,22 +415,23 @@ const endHover = (event) => {
     font-size: 1.75rem;
   }
 
-  .nav-button {
-    width: 40px;
-    height: 40px;
+  :deep(.vueperslides__bullets) {
+    padding: 6px 12px;
   }
 
-  .prev {
-    left: 15px;
+  :deep(.vueperslides__bullet) {
+    width: 8px !important;
+    height: 8px !important;
+    margin: 0 4px !important;
   }
 
-  .next {
-    right: 15px;
+  :deep(.vueperslides__arrow) {
+    width: 40px !important;
+    height: 40px !important;
   }
-
-  .cta-button {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+  
+  :deep(.vueperslides__arrow i) {
+    font-size: 1.2rem !important;
   }
 }
 </style>
