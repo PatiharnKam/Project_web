@@ -89,10 +89,16 @@ export default {
           const email = result.user.email;
           const username = email.split('@')[0];
 
-          await axios.post('http://localhost:3000/users/', {
-            Username: username,
-            Email: email,
+          const check = await axios.post('http://localhost:3000/users/check-email', {
+              Email: email
           });
+
+          if (!check.data.exists) {
+            await axios.post('http://localhost:3000/users/', {
+              Username: username,
+              Email: email,
+            });
+          }
 
           const res = await axios.post('http://localhost:3000/users/signin', {
             Email: email,

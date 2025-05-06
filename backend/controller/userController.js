@@ -23,6 +23,15 @@ exports.createAUser = async function(req, res){
         res.status(500).json(error)
     }
 }
+exports.checkemail = async function(req, res) {
+    try {
+        const user = await User.findOne({ Email: req.body.Email });
+        res.status(200).json({ exists: !!user });
+      } catch (err) {
+        res.status(500).json({ message: 'Error checking email' });
+      }
+};
+  
 
 exports.signInUser = async function(req, res) {
     const { Email } = req.body;
