@@ -6,7 +6,7 @@ import router from './router'
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 // import { getAnalytics } from "firebase/analytics";
-
+import 'vue-toast-notification/dist/theme-sugar.css'
 let app
 let auth
 
