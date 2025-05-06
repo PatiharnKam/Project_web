@@ -300,19 +300,41 @@ export default {
   color: #095d7e;
 }
 
-.macro-grid {
+.macro-grid,
+.fitness-plan,
+.meal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);  /* กำหนดให้มี 3 columns เท่าๆ กัน */
+  gap: 2rem;
+  width: 100%;
 }
 
-.macro-box {
+.macro-box,
+.plan-card,
+.meal-box {
   background: white;
   padding: 1.5rem;
   border-radius: 15px;
-  text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
+  height: 100%;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .macro-grid,
+  .fitness-plan,
+  .meal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .macro-grid,
+  .fitness-plan,
+  .meal-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .macro-box:hover {
@@ -332,19 +354,6 @@ export default {
   margin-top: 0.5rem;
 }
 
-.fitness-plan {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.plan-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
 .plan-card h4 {
   color: #095d7e;
   margin-bottom: 1rem;
@@ -359,17 +368,7 @@ export default {
   color: #2c3e50;
 }
 
-.meal-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
 .meal-box {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
 }
 
@@ -435,5 +434,6 @@ export default {
   .meal-grid {
     grid-template-columns: 1fr;
   }
+
 }
 </style>
