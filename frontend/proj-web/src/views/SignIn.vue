@@ -70,9 +70,9 @@ export default {
           });
           console.log(res.data.id);
           console.log(this.formData.email);
-          alert("Account created successfully!");
+          //alert("Account created successfully!");
           sessionStorage.setItem('userid', res.data.id);
-          // this.$router.push('/home');
+           this.$router.push('/home');
         })
         .catch((error) => {
           alert("Cannot fetch user ID: " + (error.response?.data?.message || error.message));
