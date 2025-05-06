@@ -35,7 +35,7 @@ var MealsSchema = new Schema({
         type: Array,
         Required: 'Please enter'
     },
-    ImgUrl:{
+    ImageLink:{
         type: String,
         Required: 'Please enter'
     }}, 

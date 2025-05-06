@@ -31,8 +31,6 @@ exports.checkemail = async function(req, res) {
         res.status(500).json({ message: 'Error checking email' });
       }
 };
-  
-
 exports.signInUser = async function(req, res) {
     const { Email } = req.body;
     try {
