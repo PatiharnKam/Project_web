@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="logo">
       <i class="fas fa-dumbbell dumbbell-icon"></i>
-      <span class="logo-text" @click="goToHome">Healthy</span>
+      <span class="logo-text" @click="goToHome">HealthHelp</span>
     </div>
     <div class="right-section">
       <i class="fa fa-user user-icon" @click="goToProfile"></i>
