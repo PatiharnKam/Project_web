@@ -143,49 +143,49 @@ const beforeSlide = (currentSlide) => {
 
 /* Customize Vueper Slides */
 :deep(.vueperslides) {
-  height: 100vh !important;
+  height: 100vh ;
 }
 
 /* Customize dots navigation */
 :deep(.vueperslides__bullets) {
-  bottom: 50px !important;
-  z-index: 10 !important;
+  bottom: 10px ;
+  z-index: 10 ;
   padding: 12px;
   background: transparent;
-  position: absolute !important;
-  width: 100% !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  position: absolute ;
+  width: 100% ;
+  display: flex ;
+  justify-content: center ;
+  align-items: center ;
 }
 
 :deep(.vueperslides__bullet) {
-  width: 20px !important;
-  height: 20px !important;
-  margin: 0 8px !important;
-  background-color: rgba(255, 255, 255, 0.4) !important;
-  border: 2px solid rgba(255, 255, 255, 0.8) !important;
-  transition: all 0.4s ease !important;
-  opacity: 1 !important;
+  width: 20px ;
+  height: 20px ;
+  margin: 0 8px ;
+  background-color: rgba(255, 255, 255, 0) ;
+  border: 2px solid rgba(255, 255, 255, 0) ;
+  transition: all 0.4s ease ;
+  opacity: 1 ;
 }
 
 :deep(.vueperslides__bullet--active) {
-  background-color: white !important;
-  transform: scale(1.2) !important;
-  border-color: white !important;
+  background-color: rgba(255, 255, 255, 0) ;
+  transform: scale(1.2) ;
+  border-color: rgba(255, 255, 255, 0) ;
 }
 
 :deep(.vueperslides__track-inner) {
-  height: 100vh !important;
+  height: 100vh ;
 }
 
 :deep(.vueperslides__parallax-wrapper) {
-  padding-top: 0 !important;
-  height: 100vh !important;
+  padding-top: 0 ;
+  height: 100vh ;
 }
 
 :deep(.vueperslide) {
-  background-color: black;
+  background-color: rgb(255, 255, 255);
   
   &::before {
     content: '';
@@ -475,16 +475,6 @@ const beforeSlide = (currentSlide) => {
     margin: 0 6px !important;
   }
 
-  :deep(.vueperslides__bullets) {
-    padding: 6px 12px;
-  }
-
-  :deep(.vueperslides__bullet) {
-    width: 8px !important;
-    height: 8px !important;
-    margin: 0 4px !important;
-  }
-
   :deep(.vueperslides__arrow) {
     width: 40px !important;
     height: 40px !important;
@@ -492,6 +482,11 @@ const beforeSlide = (currentSlide) => {
   
   :deep(.vueperslides__arrow i) {
     font-size: 1.2rem !important;
+  }
+
+  .bullet-custom {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>
