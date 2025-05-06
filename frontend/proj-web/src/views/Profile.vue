@@ -153,6 +153,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
+        
         const res = await axios.get(`http://localhost:3000/users/${userId}`);
         const data = res.data;
         
@@ -164,7 +165,7 @@ export default {
           gender: data.Gender || '',
           age: data.Age || '',
           activity: data.Activity || '',
-          bodyFat: data.Fat_Percent || '',
+          bodyFat: data.bodyFat || '',
           goal: data.Goal || ''
         };
       } catch (error) {
