@@ -2,18 +2,47 @@
   <div class="navbar">
     <div class="logo">
       <i class="fas fa-dumbbell dumbbell-icon"></i>
-      <span class="logo-text">Healthy</span>
+      <span class="logo-text" @click="goToHome">Healthy</span>
     </div>
     <div class="right-section">
-      <i class="fa fa-user user-icon"></i>
-      <i class="fa fa-sign-out-alt logout-icon"></i>
+      <i class="fa fa-user user-icon" @click="goToProfile"></i>
+      <i class="fa fa-sign-out-alt logout-icon" @click="logout"></i>
     </div>
   </div>
 </template>
 
 <script>
+import { getAuth, signOut } from 'firebase/auth';
 export default {
   name: 'Navbar',
+  methods: {
+    logout() {
+      const auth = getAuth();
+      signOut(auth)
+        .then(() => {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('userid');
+          location.reload();
+          this.$router.push('/home').then(() => {
+          location.reload();
+      });
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    },
+    goToHome() {
+      this.$router.push('/home');
+    },
+    goToProfile() {
+      const userId = sessionStorage.getItem('userid');
+      if (userId) {
+        this.$router.push(`/profile/${userId}`);
+      } else {
+        alert("User ID not found. Please login again.");
+      }
+    }
+  }
 }
 </script>
 
@@ -42,6 +71,7 @@ export default {
   letter-spacing: 0.5px;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0.85));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
