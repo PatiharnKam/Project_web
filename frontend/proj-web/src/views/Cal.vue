@@ -159,7 +159,8 @@ export default {
             activeSection: null
         };
     },
-    computed: {
+    created() {
+      this.fetchUserData();
     },
     mounted() {
         requestAnimationFrame(() => {
@@ -191,8 +192,8 @@ export default {
 
             if (!this.isValidTwoDecimal(this.form.height)) {
                 this.errors.height = 'Please enter a valid height.';
-            } else if (parseFloat(this.form.height) > 300) {
-                this.errors.height = 'Height cannot exceed 300 cm.';
+            } else if (parseFloat(this.form.height) > 300 && parseFloat(this.form.height) < 100) {
+                this.errors.height = 'Height cannot exceed.';
             }
 
             if (!this.isValidTwoDecimal(this.form.weight)) {
@@ -246,6 +247,26 @@ export default {
                 });
             }, 100);
         },
+        async fetchUserData() {
+        try {
+            const userId = sessionStorage.getItem('userid');
+            const res = await axios.get(`http://localhost:3000/users/${userId}`);
+            const data = res.data;
+
+            this.form = {
+                height: data.Height || '',
+                weight: data.Weight || '',
+                gender: data.Gender || '',
+                age: data.Age || '',
+                formula: data.formula || '',
+                activity: data.Activity || '',
+                bodyFat: data.bodyFat || '',
+                goal: data.Goal || ''
+            };
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+        },
         async calculate() {
             if (!this.validateForm()) return;
 
@@ -273,8 +294,11 @@ export default {
                 this.result.protein = res.data.protein;
                 this.result.carbs = res.data.carbs;
                 this.result.fat = res.data.fat;
-
-                await this.saveUserData();
+                const token = sessionStorage.getItem('token');
+                if (token) {
+                  await this.saveUserData();
+                }
+                this.navigateToResults();
             } catch (error) {
                 console.error('Calculation error:', error);
                 alert('Error calculating nutrition needs: ' + (error.response && error.response.data ? error.response.data.message : error.message));
@@ -285,6 +309,11 @@ export default {
         },
         async saveUserData() {
             try {
+                const userId = sessionStorage.getItem('userid');
+                if (!userId) {
+                  console.warn('No userId found in sessionStorage');
+                  return;
+              }
                 const userData = {
                     Height: this.form.height,
                     Weight: this.form.weight,
@@ -296,10 +325,10 @@ export default {
                     Goal: this.form.goal,
                     BMR: this.result.bmr,
                     TDEE: this.result.tdee,
-                    Calories_Perday: this.result.caloriesPerDay
+                    Calories_Perday: this.result.caloriesPerDay,
                 };
 
-                await axios.post('http://localhost:3000/users/', userData);
+                await axios.post(`http://localhost:3000/users/${userId}`, userData);
                 this.navigateToResults();
             } catch (error) {
                 console.error('Save user data error:', error);

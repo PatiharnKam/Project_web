@@ -68,7 +68,6 @@ export default {
           const res = await axios.post('http://localhost:3000/users/signin', {
             Email: this.formData.email,
           });
-        
           sessionStorage.setItem('token', res.data.token); // 🔐 เก็บ JWT
           sessionStorage.setItem('userid', res.data.id);
           this.$router.push('/home');
@@ -89,10 +88,16 @@ export default {
           const email = result.user.email;
           const username = email.split('@')[0];
 
-          await axios.post('http://localhost:3000/users/', {
-            Username: username,
-            Email: email,
+          const check = await axios.post('http://localhost:3000/users/check-email', {
+              Email: email
           });
+
+          if (!check.data.exists) {
+            await axios.post('http://localhost:3000/users/', {
+              Username: username,
+              Email: email,
+            });
+          }
 
           const res = await axios.post('http://localhost:3000/users/signin', {
             Email: email,
