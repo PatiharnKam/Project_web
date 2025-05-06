@@ -68,7 +68,6 @@ export default {
           const res = await axios.post('http://localhost:3000/users/signin', {
             Email: this.formData.email,
           });
-        
           sessionStorage.setItem('token', res.data.token); // 🔐 เก็บ JWT
           sessionStorage.setItem('userid', res.data.id);
           this.$router.push('/home');
