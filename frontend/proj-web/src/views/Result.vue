@@ -241,6 +241,31 @@ export default {
   font-size: 2.5rem;
   margin-bottom: 2.5rem;
   font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(9, 93, 126, 0.1);
+  position: relative;
+  padding-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(to right, #095d7e, #14967f);
+  transform: translateX(-50%);
+  transition: width 0.5s ease;
+}
+
+.title:hover {
+  transform: translateY(-2px);
+  text-shadow: 3px 3px 6px rgba(9, 93, 126, 0.2);
+}
+
+.title:hover::after {
+  width: 200px;
 }
 
 .result-cards {
@@ -257,12 +282,19 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 15px 40px rgba(9, 93, 126, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(9, 93, 126, 0.1);
 }
 
 .result-card:hover {
   transform: translateY(-5px);
+  box-shadow: 
+    0 8px 25px rgba(9, 93, 126, 0.15),
+    0 20px 48px rgba(9, 93, 126, 0.12);
+  border-color: rgba(9, 93, 126, 0.2);
 }
 
 .result-card i {
@@ -282,6 +314,8 @@ export default {
   font-weight: bold;
   margin-top: 0.5rem;
   text-align: center;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1),
+              0 2px 4px rgba(9, 93, 126, 0.1);
 }
 
 .result-section {
@@ -315,10 +349,32 @@ export default {
   background: white;
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 15px 40px rgba(9, 93, 126, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(9, 93, 126, 0.1);
   height: 100%;
   width: 100%;
+}
+
+.plan-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 15px 40px rgba(9, 93, 126, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(9, 93, 126, 0.1);
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 8px 25px rgba(9, 93, 126, 0.15),
+    0 20px 48px rgba(9, 93, 126, 0.12);
+  border-color: rgba(9, 93, 126, 0.2);
 }
 
 @media (max-width: 1200px) {
@@ -339,6 +395,10 @@ export default {
 
 .macro-box:hover {
   transform: translateY(-5px);
+  box-shadow: 
+    0 8px 25px rgba(9, 93, 126, 0.15),
+    0 20px 48px rgba(9, 93, 126, 0.12);
+  border-color: rgba(9, 93, 126, 0.2);
 }
 
 .macro-box i {
@@ -369,11 +429,19 @@ export default {
 }
 
 .meal-box {
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 15px 40px rgba(9, 93, 126, 0.08);
+  border: 1px solid rgba(9, 93, 126, 0.1);
 }
 
 .meal-box:hover {
   transform: translateY(-5px);
+  box-shadow: 
+    0 8px 25px rgba(9, 93, 126, 0.15),
+    0 20px 48px rgba(9, 93, 126, 0.12);
+  border-color: rgba(9, 93, 126, 0.2);
 }
 
 .meal-box h4 {
@@ -406,12 +474,16 @@ export default {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 4px 15px rgba(9, 93, 126, 0.15),
+    0 8px 25px rgba(9, 93, 126, 0.1);
 }
 
 .download-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 6px 20px rgba(9, 93, 126, 0.2),
+    0 12px 30px rgba(9, 93, 126, 0.15);
   background: #074c66;
 }
 
