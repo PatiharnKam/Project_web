@@ -67,69 +67,76 @@ exports.updateAMeal = async function(req, res){
 ;
 
 exports.getRecommendedMeals = async (req, res) => {
-  try {
-    const {
-      caloriesLimit,
-      proteinLimit,
-      carbsLimit,
-      fatLimit
-    } = req.body;
-
-    const meals = await Meal.find({}, {
-      MealName: 1,
-      Calories: 1,
-      Protein: 1,
-      Carbohydrate: 1,
-      Fat: 1,
-      ImageLink: 1
-    });
-
-    if (meals.length < 3) {
-      return res.status(400).json({ message: 'Not enough meals in the database' });
-    }
-
-    let bestCombo = null;
-    let minDiff = Infinity;
-
-    // ลองจับคู่ 3 เมนูทุกแบบ (brute-force)
-    for (let i = 0; i < meals.length - 2; i++) {
-      for (let j = i + 1; j < meals.length - 1; j++) {
-        for (let k = j + 1; k < meals.length; k++) {
-          const combo = [meals[i], meals[j], meals[k]];
-          const total = {
-            calories: combo.reduce((sum, m) => sum + m.Calories, 0),
-            protein: combo.reduce((sum, m) => sum + m.Protein, 0),
-            carbs: combo.reduce((sum, m) => sum + m.Carbohydrate, 0),
-            fat: combo.reduce((sum, m) => sum + m.Fat, 0)
-          };
-
-          // คำนวณความต่างรวม (absolute sum of difference)
-          const diff =
-            Math.abs(caloriesLimit - total.calories) +
-            Math.abs(proteinLimit - total.protein) +
-            Math.abs(carbsLimit - total.carbs) +
-            Math.abs(fatLimit - total.fat);
-
-          if (diff < minDiff) {
-            minDiff = diff;
-            bestCombo = {
-              selectedMeals: combo,
-              total
+    try {
+      const {
+        caloriesMin,
+        caloriesMax,
+        proteinLimit,
+        carbsLimit,
+        fatLimit
+      } = req.body;
+  
+      const meals = await Meal.find({}, {
+        MealName: 1,
+        Calories: 1,
+        Protein: 1,
+        Carbohydrate: 1,
+        Fat: 1,
+        ImageLink: 1
+      });
+  
+      if (meals.length < 3) {
+        return res.status(400).json({ message: 'Not enough meals in the database' });
+      }
+  
+      let combos = [];
+  
+      for (let i = 0; i < meals.length - 2; i++) {
+        for (let j = i + 1; j < meals.length - 1; j++) {
+          for (let k = j + 1; k < meals.length; k++) {
+            const combo = [meals[i], meals[j], meals[k]];
+            const total = {
+              calories: combo.reduce((sum, m) => sum + m.Calories, 0),
+              protein: combo.reduce((sum, m) => sum + m.Protein, 0),
+              carbs: combo.reduce((sum, m) => sum + m.Carbohydrate, 0),
+              fat: combo.reduce((sum, m) => sum + m.Fat, 0)
             };
+  
+            if (total.calories < caloriesMin || total.calories > caloriesMax) continue;
+  
+            const diff =
+              Math.abs(proteinLimit - total.protein) +
+              Math.abs(carbsLimit - total.carbs) +
+              Math.abs(fatLimit - total.fat);
+  
+            combos.push({
+              meals: combo,
+              total,
+              diff
+            });
           }
         }
       }
+  
+      if (combos.length === 0) {
+        return res.status(404).json({ message: 'No meal combinations found within the calorie range.' });
+      }
+  
+      combos.sort((a, b) => a.diff - b.diff);
+      const topCombos = combos.slice(0, Math.max(5, Math.floor(combos.length * 0.1)));
+      const randomPick = topCombos[Math.floor(Math.random() * topCombos.length)];
+  
+      res.status(200).json({
+        selectedMeals: randomPick.meals,
+        total: randomPick.total
+      });
+  
+    } catch (error) {
+      console.error('Error generating meal plan:', error);
+      res.status(500).json({ message: 'Failed to generate meal plan', error });
     }
-
-    if (!bestCombo) {
-      return res.status(404).json({ message: 'No suitable meal combination found' });
-    }
-
-    res.status(200).json(bestCombo);
-  } catch (error) {
-    console.error('Error generating meal plan:', error);
-    res.status(500).json({ message: 'Failed to generate meal plan', error });
-  }
-};
+  };
+  
+  
 
   
