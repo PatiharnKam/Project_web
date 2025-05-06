@@ -272,7 +272,7 @@ export default {
 
             const button = document.querySelector('.submit-button');
             button.classList.add('loading');
-            button.innerHTML = 'Calculating <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>';
+            button.innerHTML = 'Calculating...';
 
             try {
                 const formData = {
@@ -551,19 +551,16 @@ export default {
     background-color: white;
 }
 
-/* สีเทาสำหรับ placeholder */
 .input-container select,
 .input-container select option[disabled] {
     color: #666;
 }
 
-/* สีดำเมื่อมีการเลือก */
 .input-container select option,
 .input-container select:focus {
     color: #000;
 }
 
-/* สีดำสำหรับค่าที่ถูกเลือก */
 .input-container select:has(option:checked:not([disabled])) {
     color: #000;
 }
@@ -741,38 +738,6 @@ export default {
 .loading {
     position: relative;
     cursor: wait;
-}
-
-.loading-dots span {
-    animation: loadingDots 1.4s infinite both;
-    opacity: 0;
-    display: inline-block;
-}
-
-.loading-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.loading-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes loadingDots {
-    0% {
-        opacity: 0;
-        transform: translateY(0);
-    }
-
-    25% {
-        opacity: 1;
-        transform: translateY(-3px);
-    }
-
-    50%,
-    100% {
-        opacity: 0;
-        transform: translateY(0);
-    }
 }
 
 @media (max-width: 768px) {
