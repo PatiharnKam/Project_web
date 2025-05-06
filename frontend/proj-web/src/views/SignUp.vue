@@ -137,10 +137,13 @@
 </template>
 
 <script>
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import axios from 'axios';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import 'vue-toast-notification/dist/theme-sugar.css';
+import { useToast } from 'vue-toast-notification';
 
 export default {
+  name: 'SignUp',
   data() {
     return {
       formData: {
@@ -152,42 +155,142 @@ export default {
       },
       showPassword: false,
       showConfirmPassword: false,
-      showTermsModal: false
+      showTermsModal: false,
+      toast: useToast()
     };
   },
   methods: {
-    signUp() {
+    async signUp() {
       if (this.formData.password !== this.formData.confirmPassword) {
-        alert("Passwords do not match.");
+        this.toast.error('Passwords do not match. Please make sure both passwords are the same.', {
+          position: 'top-right',
+          duration: 5000
+        });
         return;
       }
 
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password)
-        .then(() => {
-          const res = axios.post('http://localhost:3000/users/', {
-            Username: this.formData.username,
-            Email: this.formData.email,
-          });
-          alert("Account created successfully!");
-          this.$router.push('/signin'); // Redirect to sign-in page
-        })
-        .catch((error) => {
-          alert(error.message);
+      if (this.formData.password.length < 6) {
+        this.toast.error('Password must be at least 6 characters long.', {
+          position: 'top-right',
+          duration: 5000
         });
+        return;
+      }
+
+      try {
+        // ตรวจสอบอีเมลซ้ำก่อน
+        const checkEmail = await axios.post('http://localhost:3000/users/check-email', {
+          Email: this.formData.email
+        });
+
+        if (checkEmail.data.exists) {
+          this.toast.error('This email is already registered. Please use a different email or try signing in.', {
+            position: 'top-right',
+            duration: 5000
+          });
+          return;
+        }
+
+        const auth = getAuth();
+        await createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password);
+        
+        await axios.post('http://localhost:3000/users/', {
+          Username: this.formData.username,
+          Email: this.formData.email,
+        });
+
+        this.toast.success('Account created successfully!', {
+          position: 'top-right',
+          duration: 3000
+        });
+        this.$router.push('/signin');
+      } catch (error) {
+        let errorMessage = 'Sign up failed.';
+        
+        // จัดการ Firebase Auth errors
+        if (error.code) {
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'This email is already registered. Please use a different email or try signing in.';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Please enter a valid email address.';
+              break;
+            case 'auth/operation-not-allowed':
+              errorMessage = 'Email/password accounts are not enabled. Please contact support.';
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'Password is too weak. Please choose a stronger password.';
+              break;
+            default:
+              errorMessage = error.message;
+          }
+        } else if (error.response?.data?.message) {
+          // จัดการ Backend errors
+          errorMessage = error.response.data.message;
+        }
+
+        this.toast.error(errorMessage, {
+          position: 'top-right',
+          duration: 5000
+        });
+      }
     },
     showTerms() {
       this.showTermsModal = true;
     },
-    
     acceptTerms() {
       this.formData.acceptAgreement = true;
       this.showTermsModal = false;
     },
-    
     declineTerms() {
       this.formData.acceptAgreement = false;
       this.showTermsModal = false;
+    },
+    signUpWithGoogle() {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
+        .then(async (result) => {
+          const email = result.user.email;
+          const username = email.split('@')[0];
+
+          try {
+            const check = await axios.post('http://localhost:3000/users/check-email', {
+              Email: email
+            });
+
+            if (check.data.exists) {
+              this.toast.error('This email is already registered!', {
+                position: 'top-right',
+                duration: 5000
+              });
+              return;
+            }
+
+            await axios.post('http://localhost:3000/users/', {
+              Username: username,
+              Email: email,
+            });
+
+            this.toast.success('Account created successfully!', {
+              position: 'top-right',
+              duration: 3000
+            });
+            this.$router.push('/signin');
+          } catch (error) {
+            this.toast.error('Sign up failed. Please try again.', {
+              position: 'top-right',
+              duration: 5000
+            });
+          }
+        })
+        .catch((error) => {
+          this.toast.error('Google sign up failed. Please try again.', {
+            position: 'top-right',
+            duration: 5000
+          });
+        });
     }
   },
 };
