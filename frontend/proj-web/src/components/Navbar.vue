@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="logo">
       <i class="fas fa-dumbbell dumbbell-icon"></i>
-      <span class="logo-text" @click="goToHome">Healthy</span>
+      <span class="logo-text" @click="goToHome">HealthHelp</span>
     </div>
     <div class="right-section">
       <i class="fa fa-user user-icon" @click="goToProfile"></i>
@@ -101,16 +101,31 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: translateY(-2px);
+}
+
+.logo:hover .dumbbell-icon {
+  animation: swingDumbbell 0.6s ease-in-out infinite;
+  color: #e6f7f5;
+}
+
+.logo:hover .logo-text {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #ffffff, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .dumbbell-icon {
   font-size: 1.8rem;
   color: white;
   transition: transform 0.3s ease;
-}
-
-.logo:hover .dumbbell-icon {
-  animation: swingDumbbell 0.6s ease-in-out infinite;
 }
 
 @keyframes swingDumbbell {

@@ -31,26 +31,29 @@ exports.checkemail = async function(req, res) {
         res.status(500).json({ message: 'Error checking email' });
       }
 };
-  
-
 exports.signInUser = async function(req, res) {
     const { Email } = req.body;
     try {
       const user = await User.findOne({ Email });
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ 
+          message: "We couldn't find an account with that email address. Please check your email or sign up for a new account." 
+        });
       }
   
-      // สร้าง JWT token พร้อม user ID และ Email
+      // สร้าง JWT token
       const token = jwt.sign(
         { id: user._id, email: user.Email },
         JWT_SECRET,
         { expiresIn: '2h' } // หรือจะใช้ '7d'
-      );
+      )
   
       res.status(200).json({ id: user._id, token });
     } catch (error) {
-      res.status(500).json({ message: "Server error", error });
+      res.status(500).json({ 
+        message: "Something went wrong. Please try again later.",
+        error 
+      });
     }
   };
 
