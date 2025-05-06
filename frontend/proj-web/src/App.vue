@@ -54,4 +54,9 @@ export default {
   width: 100vw;
   min-height: 100vh;
 }
+@media print {
+  .navbar {
+    display: none !important;
+  }
+}
 </style>

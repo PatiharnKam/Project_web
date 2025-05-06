@@ -436,4 +436,117 @@ export default {
     grid-template-columns: 1fr;
   }
 }
+
+@media print {
+
+    @page {
+        size: A4;
+        margin: 20mm 0 0 0; 
+    }
+
+    html,
+    body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 auto !important;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #app>*:not(.result-container) {
+        display: none !important;
+    }
+
+    .result-container,
+    .result-container * {
+        visibility: visible !important;
+    }
+
+    .result-container {
+        position: relative !important;
+        width: 180mm !important;
+        margin: 15mm auto !important;
+        padding: 0 !important;
+        background: white !important;
+        box-shadow: none !important;
+        float: none !important;
+    }
+
+    .result-cards {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10mm !important;
+        margin-bottom: 15mm !important;
+        width: 100% !important;
+    }
+
+    .macro-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10mm !important;
+        width: 100% !important;
+        margin-bottom: 0 !important; 
+    }
+
+    .protected-content {
+        page-break-before: always !important; 
+        margin-top: 20mm !important; 
+    }
+
+    .result-section {
+        page-break-inside: avoid !important; 
+    }
+
+    .result-card,
+    .macro-box,
+    .plan-card,
+    .meal-box {
+        background: white !important;
+        border: 1px solid #095d7e !important;
+        box-shadow: none !important;
+        padding: 8mm !important;
+        margin: 0 !important;
+    }
+
+    .value-box {
+        background: white !important;
+        color: #095d7e !important;
+        border: 2px solid #095d7e !important;
+        margin-top: 5mm !important;
+    }
+
+    .title {
+        font-size: 28pt !important;
+        margin-bottom: 15mm !important;
+        color: #095d7e !important;
+    }
+
+    h3 {
+        font-size: 20pt !important;
+        color: #095d7e !important;
+        margin-bottom: 10mm !important;
+    }
+
+    p,
+    li {
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+    }
+
+    .download-btn {
+        display: none !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    @supports (-webkit-appearance:none) {
+        html {
+            background: white !important;
+        }
+    }
+}
+
 </style>
