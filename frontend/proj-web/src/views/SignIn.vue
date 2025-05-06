@@ -49,6 +49,9 @@
 <script>
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import axios from 'axios';
+import 'vue-toast-notification/dist/theme-sugar.css';
+import { useToast } from 'vue-toast-notification';
+
 export default {
   name: 'SignIn',
   data() {
@@ -57,7 +60,8 @@ export default {
         email: '',
         password: ''
       },
-      showPassword: false
+      showPassword: false,
+      toast: useToast()
     };
   },
   methods: {
@@ -65,16 +69,44 @@ export default {
       const auth = getAuth();
       signInWithEmailAndPassword(auth, this.formData.email, this.formData.password)
         .then(async () => {
-          const res = await axios.post('http://localhost:3000/users/signin', {
-            Email: this.formData.email,
-          });
-          sessionStorage.setItem('token', res.data.token); // 🔐 เก็บ JWT
-          sessionStorage.setItem('userid', res.data.id);
-          this.$router.push('/home');
+          try {
+            const res = await axios.post('http://localhost:3000/users/signin', {
+              Email: this.formData.email,
+            });
+            sessionStorage.setItem('token', res.data.token);
+            sessionStorage.setItem('userid', res.data.id);
+            this.toast.success('Sign in successful!', {
+              position: 'top-right',
+              duration: 3000
+            });
+            this.$router.push('/home');
+          } catch (error) {
+            this.toast.error(error.response?.data?.message || 'Unable to sign in. Please try again.', {
+              position: 'top-right',
+              duration: 5000
+            });
+          }
         })
         .catch((error) => {
-          alert("Cannot fetch user ID: " + (error.response?.data?.message || error.message));
-
+          let errorMessage = 'Sign in failed. Please check your credentials.';
+          switch (error.code) {
+            case 'auth/wrong-password':
+              errorMessage = 'Incorrect password. Please try again.';
+              break;
+            case 'auth/user-not-found':
+              errorMessage = 'We couldn\'t find an account with that email. Please check your email or sign up.';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Please enter a valid email address.';
+              break;
+            case 'auth/too-many-requests':
+              errorMessage = 'Too many unsuccessful attempts. Please try again later.';
+              break;
+          }
+          this.toast.error(errorMessage, {
+            position: 'top-right',
+            duration: 5000
+          });
         });
     },
     togglePassword() {
@@ -88,27 +120,45 @@ export default {
           const email = result.user.email;
           const username = email.split('@')[0];
 
-          const check = await axios.post('http://localhost:3000/users/check-email', {
+          try {
+            const check = await axios.post('http://localhost:3000/users/check-email', {
               Email: email
-          });
+            });
 
-          if (!check.data.exists) {
-            await axios.post('http://localhost:3000/users/', {
-              Username: username,
+            if (!check.data.exists) {
+              await axios.post('http://localhost:3000/users/', {
+                Username: username,
+                Email: email,
+              });
+              this.toast.success('Account created successfully!', {
+                position: 'top-right',
+                duration: 3000
+              });
+            }
+
+            const res = await axios.post('http://localhost:3000/users/signin', {
               Email: email,
             });
+
+            sessionStorage.setItem('token', res.data.token);
+            sessionStorage.setItem('userid', res.data.id);
+            this.toast.success('Sign in successful!', {
+              position: 'top-right',
+              duration: 3000
+            });
+            this.$router.push('/home');
+          } catch (error) {
+            this.toast.error('Sign in failed. Please try again.', {
+              position: 'top-right',
+              duration: 5000
+            });
           }
-
-          const res = await axios.post('http://localhost:3000/users/signin', {
-            Email: email,
-          });
-
-          sessionStorage.setItem('token', res.data.token);
-          sessionStorage.setItem('userid', res.data.id);
-          this.$router.push('/home');
         })
         .catch((error) => {
-          alert(error.message);
+          this.toast.error('Google sign in failed. Please try again.', {
+            position: 'top-right',
+            duration: 5000
+          });
         });
     }
   }
