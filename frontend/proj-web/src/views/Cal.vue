@@ -364,7 +364,6 @@ export default {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     opacity: 1;
     transition: opacity 0.3s ease;
-    margin-top: 2rem;
 }
 
 .calculator-content {

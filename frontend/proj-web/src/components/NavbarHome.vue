@@ -74,13 +74,13 @@ export default {
 }
 
 .signin-btn {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .signin-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(99, 98, 98, 0.25);
   border-color: rgba(255, 255, 255, 0.8);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
