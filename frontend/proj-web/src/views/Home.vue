@@ -3,24 +3,34 @@
     <section class="hero-section">
       <vueper-slides
         class="slider-container"
-        :bullets="true"
+        :touchable="true"
         :infinite="true"
-        :fade="false"
-        :bullets-outside="false"
-        :touch-dragging="false"
-        bullets-position="bottom"
-        :arrows="true"
+        :fade="true"
+        fade-mode="out-in"
+        :autoplay="true"
+        :bullets="true"
+        :bullets-outside="true"
         :duration="3000"
-        :delay="3000"
-        autoplay
+        :delay="5000"
+        :parallel="true"
+        :dragging-distance="70"
+        :breakpoints="{ 
+          768: {
+            visibleSlides: 1,
+            bullets: true,
+            bulletsOutside: true
+          }
+        }"
         @autoplay-pause="handleAutoplayPause"
         @autoplay-resume="handleAutoplayResume"
+        @before-slide="beforeSlide"
       >
         <vueper-slide
           v-for="(image, i) in images"
           :key="i"
           :image="image"
           :title="titles[i]"
+          :style="{ cursor: 'grab' }"
         >
           <template v-slot:content>
             <div class="hero-text-overlay" :class="{ 'fade-in': true }">
@@ -39,6 +49,10 @@
 
         <template v-slot:arrow-right>
           <i class="fas fa-chevron-right"></i>
+        </template>
+
+        <template v-slot:bullet-content="{ active }">
+          <div :class="['bullet-custom', { active }]"></div>
         </template>
       </vueper-slides>
     </section>
@@ -95,11 +109,15 @@ const titles = [
 ]
 
 const handleAutoplayPause = () => {
-  // Handle autoplay pause if needed
+  console.log('Autoplay paused')
 }
 
 const handleAutoplayResume = () => {
-  // Handle autoplay resume if needed
+  console.log('Autoplay resumed')
+}
+
+const beforeSlide = (currentSlide) => {
+  console.log(`Transitioning to slide ${currentSlide}`)
 }
 </script>
 
@@ -130,27 +148,31 @@ const handleAutoplayResume = () => {
 
 /* Customize dots navigation */
 :deep(.vueperslides__bullets) {
-  bottom: 20px !important;
-  top: auto !important;
+  bottom: 50px !important;
   z-index: 10 !important;
-  padding: 8px;
-  border-radius: 50px;
+  padding: 12px;
   background: transparent;
+  position: absolute !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 :deep(.vueperslides__bullet) {
-  width: 12px !important;
-  height: 12px !important;
-  margin: 0 6px !important;
-  background-color: rgba(255, 255, 255, 0.3) !important;
-  border: none !important;
-  transition: all 0.3s ease !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 8px !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.4s ease !important;
   opacity: 1 !important;
 }
 
 :deep(.vueperslides__bullet--active) {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: white !important;
   transform: scale(1.2) !important;
+  border-color: white !important;
 }
 
 :deep(.vueperslides__track-inner) {
@@ -184,7 +206,9 @@ const handleAutoplayResume = () => {
 /* Customize arrow navigation */
 :deep(.vueperslides__arrow) {
   color: white !important;
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50% !important;
   width: 50px !important;
   height: 50px !important;
@@ -344,6 +368,31 @@ const handleAutoplayResume = () => {
   transform: translateX(4px);
 }
 
+/* Custom bullet styling */
+.bullet-custom {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.4s ease;
+}
+
+.bullet-custom.active {
+  background: white;
+  transform: scale(1.2);
+  border-color: white;
+}
+
+/* Improve slider touch interaction */
+:deep(.vueperslides__track) {
+  cursor: grab;
+}
+
+:deep(.vueperslides__track:active) {
+  cursor: grabbing;
+}
+
 @keyframes slideInDown {
   from {
     opacity: 0;
@@ -413,6 +462,17 @@ const handleAutoplayResume = () => {
 
   .feature-card h3 {
     font-size: 1.75rem;
+  }
+
+  :deep(.vueperslides__bullets) {
+    bottom: 40px !important;
+    padding: 8px;
+  }
+
+  :deep(.vueperslides__bullet) {
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 6px !important;
   }
 
   :deep(.vueperslides__bullets) {
