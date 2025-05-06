@@ -68,31 +68,42 @@
         </div>
 
         <div class="result-section">
-          <h3><i class="fas fa-utensils"></i> Suggested Meal Plan</h3>
+          <h3><i class="fas fa-utensils"></i> Suggested Menu Plan</h3>
           <div class="meal-grid">
             <div class="meal-box">
-              <h4>Breakfast</h4>
+              <h4>Oatmeal with fruits</h4>
               <ul>
-                <li>Oatmeal with fruits</li>
-                <li>Greek yogurt</li>
-                <li>Nuts and seeds</li>
+                <li>Protein: 51g</li>
+                <li>Carbohydrate: 25g</li>
+                <li>Fat: 5g</li>
+                <li>Calories: 125 kcal</li>
               </ul>
+              <img src="https://th.bing.com/th/id/OSK.c88176d9956f8129a58f82782ccd204c?w=194&h=129&rs=2&qlt=80&o=6&cdv=1&dpr=1.3&pid=16.1" alt="Oatmeal with fruits" />
             </div>
             <div class="meal-box">
-              <h4>Lunch</h4>
+              <h4>Oatmeal with fruits</h4>
               <ul>
-                <li>Grilled chicken breast</li>
-                <li>Brown rice</li>
-                <li>Steamed vegetables</li>
+                <li>Protein: 51g</li>
+                <li>Carbohydrate: 25g</li>
+                <li>Fat: 5g</li>
+                <li>Calories: 125 kcal</li>
               </ul>
+              <img src="https://th.bing.com/th/id/OSK.c88176d9956f8129a58f82782ccd204c?w=194&h=129&rs=2&qlt=80&o=6&cdv=1&dpr=1.3&pid=16.1" alt="Oatmeal with fruits" />
             </div>
             <div class="meal-box">
-              <h4>Dinner</h4>
+              <h4>Oatmeal with fruits</h4>
               <ul>
-                <li>Salmon fillet</li>
-                <li>Sweet potato</li>
-                <li>Green salad</li>
+                <li>Protein: 51g</li>
+                <li>Carbohydrate: 25g</li>
+                <li>Fat: 5g</li>
+                <li>Calories: 125 kcal</li>
               </ul>
+              <img src="https://th.bing.com/th/id/OSK.c88176d9956f8129a58f82782ccd204c?w=194&h=129&rs=2&qlt=80&o=6&cdv=1&dpr=1.3&pid=16.1" alt="Oatmeal with fruits" />
+            </div>
+            <div class="total-calories-box">
+              <i class="fas fa-calculator"></i>
+              <h4>Total Daily Calories</h4>
+              <div class="calories-value">1004 kcal</div>
             </div>
           </div>
         </div>
@@ -377,6 +388,87 @@ export default {
     0 20px 48px rgba(9, 93, 126, 0.12);
   border-color: rgba(9, 93, 126, 0.2);
 }
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  position: relative;
+}
+
+.meal-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 40px rgba(9, 93, 126, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(9, 93, 126, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.meal-box h4 {
+  color: #095d7e;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.meal-box ul {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+  flex-grow: 1;
+}
+
+.meal-box li {
+  margin: 0.8rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.meal-box img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.total-calories-box {
+  grid-column: 1 / -1;
+  background: #095d7e;
+  padding: 2rem;
+  border-radius: 15px;
+  margin-top: 2rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 8px 25px rgba(9, 93, 126, 0.15);
+  transition: all 0.3s ease;
+}
+
+.total-calories-box i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.total-calories-box h4 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.total-calories-box .calories-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 1200px) {
   .macro-grid,
   .fitness-plan,
@@ -390,6 +482,18 @@ export default {
   .fitness-plan,
   .meal-grid {
     grid-template-columns: 1fr;
+  }
+
+  .meal-box {
+    padding: 1.5rem;
+  }
+
+  .meal-box img {
+    height: 180px;
+  }
+
+  .total-calories-box {
+    padding: 1.5rem;
   }
 }
 
@@ -456,6 +560,43 @@ export default {
 
 .meal-box li {
   margin: 0.5rem 0;
+  color: #2c3e50;
+}
+
+.total-calories-box {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 15px 40px rgba(9, 93, 126, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(9, 93, 126, 0.1);
+  text-align: center;
+}
+
+.total-calories-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 8px 25px rgba(9, 93, 126, 0.15),
+    0 20px 48px rgba(9, 93, 126, 0.12);
+  border-color: rgba(9, 93, 126, 0.2);
+}
+
+.total-calories-box i {
+  font-size: 2rem;
+  color: #095d7e;
+  margin-bottom: 1rem;
+}
+
+.total-calories-box h4 {
+  color: #095d7e;
+  margin-bottom: 1rem;
+}
+
+.total-calories-box .calories-value {
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #2c3e50;
 }
 
