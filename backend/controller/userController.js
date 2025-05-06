@@ -1,6 +1,8 @@
 'use strict'
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = "HelpHealthSecretKey"; // Secret key for JWT signing
 
 exports.listAllUsers = async function(req, res){
     var query = { sort: { firstName: 1 } }
@@ -22,19 +24,26 @@ exports.createAUser = async function(req, res){
     }
 }
 
-exports.signInUser = async function(req, res){
-  const { Email } = req.body;
-  try {
-    let user = await User.findOne({ Email: Email });
-    if (user) {
-      res.status(200).json({ id: user._id }); // ← แก้ตรงนี้
-    } else {
-      res.status(404).json({ message: "User not found" });
+exports.signInUser = async function(req, res) {
+    const { Email } = req.body;
+    try {
+      const user = await User.findOne({ Email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // สร้าง JWT token พร้อม user ID และ Email
+      const token = jwt.sign(
+        { id: user._id, email: user.Email },
+        JWT_SECRET,
+        { expiresIn: '2h' } // หรือจะใช้ '7d'
+      );
+  
+      res.status(200).json({ id: user._id, token });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
     }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-}
+  };
 
 
 exports.readAUser = async function(req, res){

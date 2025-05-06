@@ -68,11 +68,10 @@ export default {
           const res = await axios.post('http://localhost:3000/users/signin', {
             Email: this.formData.email,
           });
-          console.log(res.data.id);
-          console.log(this.formData.email);
-          //alert("Account created successfully!");
+        
+          sessionStorage.setItem('token', res.data.token); // 🔐 เก็บ JWT
           sessionStorage.setItem('userid', res.data.id);
-           this.$router.push('/home');
+          this.$router.push('/home');
         })
         .catch((error) => {
           alert("Cannot fetch user ID: " + (error.response?.data?.message || error.message));
@@ -86,8 +85,21 @@ export default {
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
       signInWithPopup(auth, provider)
-        .then((result) => {
-          // You can also get user info with result.user
+        .then(async (result) => {
+          const email = result.user.email;
+          const username = email.split('@')[0];
+
+          await axios.post('http://localhost:3000/users/', {
+            Username: username,
+            Email: email,
+          });
+
+          const res = await axios.post('http://localhost:3000/users/signin', {
+            Email: email,
+          });
+
+          sessionStorage.setItem('token', res.data.token);
+          sessionStorage.setItem('userid', res.data.id);
           this.$router.push('/home');
         })
         .catch((error) => {
