@@ -367,7 +367,6 @@ const beforeSlide = (currentSlide) => {
 .cta-button:hover i {
   transform: translateX(4px);
 }
-
 /* Custom bullet styling */
 .bullet-custom {
   width: 20px;
@@ -392,7 +391,6 @@ const beforeSlide = (currentSlide) => {
 :deep(.vueperslides__track:active) {
   cursor: grabbing;
 }
-
 @keyframes slideInDown {
   from {
     opacity: 0;

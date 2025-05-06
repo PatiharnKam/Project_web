@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Meal = require('../controller/mealController');
 
+router.route('/recommendation')
+    .post(Meal.getRecommendedMeals);
+
 router.route('/')
     .get(Meal.listAllMeals)
     .post(Meal.createAMeal);
