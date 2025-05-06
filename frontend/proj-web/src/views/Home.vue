@@ -47,7 +47,7 @@
     <!-- Features Section -->
     <section class="features-section">
       <div class="features-grid">
-        <div class="feature-card" @mouseenter="startHover" @mouseleave="endHover">
+        <div class="feature-card">
           <div class="icon-wrapper">
             <i class="fas fa-calculator"></i>
           </div>
@@ -55,20 +55,12 @@
           <p>Calculate your daily caloric needs based on your personal metrics</p>
         </div>
         
-        <div class="feature-card" @mouseenter="startHover" @mouseleave="endHover">
+        <div class="feature-card">
           <div class="icon-wrapper">
             <i class="fas fa-utensils"></i>
           </div>
           <h3>Meal Planning</h3>
           <p>Get personalized meal suggestions tailored to your goals</p>
-        </div>
-        
-        <div class="feature-card" @mouseenter="startHover" @mouseleave="endHover">
-          <div class="icon-wrapper">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3>Progress Tracking</h3>
-          <p>Monitor your health journey with detailed analytics</p>
         </div>
       </div>
 
@@ -276,49 +268,55 @@ const endHover = (event) => {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1400px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .feature-card {
   background: white;
-  padding: 2.5rem;
+  padding: 3rem;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  cursor: pointer;
+  cursor: default;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .icon-wrapper {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: #e6f7f5;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 2rem;
 }
 
 .icon-wrapper i {
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #095D7E;
 }
 
 .feature-card h3 {
   color: #095D7E;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .feature-card p {
   color: #666;
-  line-height: 1.6;
-  font-size: 1.1rem;
+  line-height: 1.8;
+  font-size: 1.2rem;
 }
 
 .cta-container {
@@ -374,12 +372,26 @@ const endHover = (event) => {
 
   .features-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
+    gap: 2rem;
+    padding: 0 1.5rem;
   }
 
-  .features-section {
-    padding: 4rem 1rem;
+  .feature-card {
+    padding: 2.5rem;
+  }
+
+  .icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+  }
+
+  .icon-wrapper i {
+    font-size: 2rem;
+  }
+
+  .feature-card h3 {
+    font-size: 1.75rem;
   }
 
   .nav-button {
