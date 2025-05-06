@@ -198,7 +198,7 @@ export default {
 
             if (!this.isValidTwoDecimal(this.form.weight)) {
                 this.errors.weight = 'Please enter a valid weight.';
-            } else if (parseFloat(this.form.weight) > 600) {
+            } else if (parseFloat(this.form.weight) > 600 && parseFloat(this.form.weight) < 20) {
                 this.errors.weight = 'Weight cannot exceed 600 kg.';
             }
 
@@ -206,7 +206,7 @@ export default {
 
             if (!this.isPositiveInteger(this.form.age)) {
                 this.errors.age = 'Please enter a valid age.';
-            } else if (parseInt(this.form.age) > 120) {
+            } else if (parseInt(this.form.age) > 120 && parseInt(this.form.age) < 10) {
                 this.errors.age = 'Age cannot exceed 120.';
             }
 
