@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <!-- แสดง Navbar เฉพาะเมื่อไม่อยู่ในหน้าที่ซ่อน -->
-    <Navbar v-if="showNavbar" @logout="logout" />
+    <!-- ถ้า login แล้ว → แสดง Navbar ปกติ ยกเว้น signin/signup -->
+    <Navbar v-if="isLoggedIn && !isAuthPage" />
+
+    <!-- ถ้าไม่ได้ login → แสดง NavbarHome ยกเว้น signin/signup -->
+    <NavbarHome v-else-if="!isLoggedIn && !isAuthPage" />
+
     <router-view />
   </div>
 </template>
@@ -9,39 +13,37 @@
 <script>
 import { getAuth, signOut } from 'firebase/auth';
 import Navbar from './components/Navbar.vue';
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import NavbarHome from './components/NavbarHome.vue';
 
 export default {
   name: 'App',
   components: {
     Navbar,
+    NavbarHome
   },
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-
-    // ซ่อน Navbar ในหน้า signin หรือ register
-    const hideNavbarRoutes = ['/signin', '/signup','/home'];
-    const showNavbar = computed(() => !hideNavbarRoutes.includes(route.path));
-
-    const logout = () => {
-      const auth = getAuth();
-      signOut(auth)
-        .then(() => {
-          router.push('/signin');
-        })
-        .catch((error) => {
-          alert(error.message);
-          console.error(error);
-        });
-    };
-
+  data() {
     return {
-      showNavbar,
-      logout,
+      isLoggedIn: false
     };
   },
+  computed: {
+    isAuthPage() {
+      return this.$route.path === '/signin' || this.$route.path === '/signup';
+    }
+  },
+  watch: {
+    $route() {
+      this.updateLoginState();
+    }
+  },
+  mounted() {
+    this.updateLoginState();
+  },
+  methods: {
+    updateLoginState() {
+      this.isLoggedIn = !!sessionStorage.getItem('token');
+    },
+  }
 };
 </script>
 
@@ -53,5 +55,3 @@ export default {
   min-height: 100vh;
 }
 </style>
-
-

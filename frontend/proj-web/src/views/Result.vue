@@ -1,21 +1,22 @@
 <template>
   <div class="result-container">
-    <br><br><h2 class="title">Your Nutrition Summary</h2>
+    <br /><br />
+    <h2 class="title">Your Nutrition Summary</h2>
 
     <div class="result-cards">
       <div class="result-card">
         <i class="fas fa-fire"></i>
         <div class="card-content">
           <label>BMR (Basal Metabolic Rate)</label>
-          <div class="value-box">{{ result.BMR }} kcal</div>
+          <div class="value-box">{{ result.bmr }} kcal</div>
         </div>
       </div>
-  
+
       <div class="result-card">
         <i class="fas fa-running"></i>
         <div class="card-content">
           <label>TDEE (Total Daily Energy Expenditure)</label>
-          <div class="value-box">{{ result.TDEE }} kcal</div>
+          <div class="value-box">{{ result.tdee }} kcal</div>
         </div>
       </div>
     </div>
@@ -26,122 +27,208 @@
         <div class="macro-box">
           <i class="fas fa-drumstick-bite"></i>
           <p>Protein</p>
-          <div class="macro-value">{{ result.Protein }} g</div>
+          <div class="macro-value">{{ result.protein }} g</div>
         </div>
         <div class="macro-box">
           <i class="fas fa-cheese"></i>
           <p>Fat</p>
-          <div class="macro-value">{{ result.Fat }} g</div>
+          <div class="macro-value">{{ result.fat }} g</div>
         </div>
         <div class="macro-box">
           <i class="fas fa-bread-slice"></i>
           <p>Carbohydrate</p>
-          <div class="macro-value">{{ result.Carbs }} g</div>
+          <div class="macro-value">{{ result.carbs }} g</div>
         </div>
       </div>
     </div>
+    <div class="protected-wrapper">
+      <div v-if="!isLoggedIn" class="overlay-box">
+        <p>Please sign in to see this section</p>
+        <button @click="goToSignin">Go to Signin</button>
+      </div>
+      <div class="protected-content" :class="{ blurred: !isLoggedIn }">
+        <div class="result-section">
+          <h3><i class="fas fa-dumbbell"></i> Recommended Fitness Plan</h3>
+          <div class="fitness-plan">
+            <div class="plan-card">
+              <h4>Cardio</h4>
+              <ul>
+                <li>30 minutes of moderate cardio 3-4 times per week</li>
+                <li>Choose from: walking, jogging, cycling, or swimming</li>
+              </ul>
+            </div>
+            <div class="plan-card">
+              <h4>Strength Training</h4>
+              <ul>
+                <li>2-3 strength training sessions per week</li>
+                <li>Focus on compound exercises</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-    <div class="result-section">
-      <h3><i class="fas fa-dumbbell"></i> Recommended Fitness Plan</h3>
-      <div class="fitness-plan">
-        <div class="plan-card">
-          <h4>Cardio</h4>
-          <ul>
-            <li>30 minutes of moderate cardio 3-4 times per week</li>
-            <li>Choose from: walking, jogging, cycling, or swimming</li>
-          </ul>
+        <div class="result-section">
+          <h3><i class="fas fa-utensils"></i> Suggested Meal Plan</h3>
+          <div class="meal-grid">
+            <div class="meal-box">
+              <h4>Breakfast</h4>
+              <ul>
+                <li>Oatmeal with fruits</li>
+                <li>Greek yogurt</li>
+                <li>Nuts and seeds</li>
+              </ul>
+            </div>
+            <div class="meal-box">
+              <h4>Lunch</h4>
+              <ul>
+                <li>Grilled chicken breast</li>
+                <li>Brown rice</li>
+                <li>Steamed vegetables</li>
+              </ul>
+            </div>
+            <div class="meal-box">
+              <h4>Dinner</h4>
+              <ul>
+                <li>Salmon fillet</li>
+                <li>Sweet potato</li>
+                <li>Green salad</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="plan-card">
-          <h4>Strength Training</h4>
-          <ul>
-            <li>2-3 strength training sessions per week</li>
-            <li>Focus on compound exercises</li>
-          </ul>
-        </div>
+
+        <button class="download-btn" @click="downloadPDF">
+          <i class="fas fa-download"></i> Download Summary
+        </button>
       </div>
     </div>
-
-    <div class="result-section">
-      <h3><i class="fas fa-utensils"></i> Suggested Meal Plan</h3>
-      <div class="meal-grid">
-        <div class="meal-box">
-          <h4>Breakfast</h4>
-          <ul>
-            <li>Oatmeal with fruits</li>
-            <li>Greek yogurt</li>
-            <li>Nuts and seeds</li>
-          </ul>
-        </div>
-        <div class="meal-box">
-          <h4>Lunch</h4>
-          <ul>
-            <li>Grilled chicken breast</li>
-            <li>Brown rice</li>
-            <li>Steamed vegetables</li>
-          </ul>
-        </div>
-        <div class="meal-box">
-          <h4>Dinner</h4>
-          <ul>
-            <li>Salmon fillet</li>
-            <li>Sweet potato</li>
-            <li>Green salad</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <button class="download-btn" @click="downloadPDF">
-      <i class="fas fa-download"></i> Download Summary
-    </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Result',
+  name: "Result",
   data() {
     return {
       result: {
-        BMR: null,
-        TDEE: null,
-        Calories_Perday: null,
-        Protein: null,
-        Carbs: null,
-        Fat: null
-      }
+        bmr: null,
+        tdee: null,
+        caloriesPerDay: null,
+        protein: null,
+        carbs: null,
+        fat: null,
+      },
     };
   },
+  computed: {
+    isLoggedIn() {
+      return !!sessionStorage.getItem("token");
+    },
+  },
   created() {
-      const saved = sessionStorage.getItem('result');
-      if (saved) {
-          this.result = JSON.parse(saved);
-      }
+    const saved = sessionStorage.getItem("result");
+    if (saved) {
+      this.result = JSON.parse(saved);
+    }
   },
   methods: {
     downloadPDF() {
       window.print();
-    }
-  }
+    },
+    goToSignin() {
+      this.$router.push("/signin");
+    },
+  },
 };
 </script>
 
 <style scoped>
+.protected-wrapper {
+  position: relative;
+}
+
+.protected-content.blurred {
+  filter: blur(10px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.overlay-box {
+  position: absolute; /* จับกลางทั้งหน้าจอ */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border-radius: 15px;
+  text-align: center;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+
+.overlay-box button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.6rem;
+  background-color: #14967f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.overlay-box button:hover {
+  background-color: #0f7c6b;
+}
+
+.blurred-section {
+  filter: blur(4px);
+  pointer-events: none;
+  position: relative;
+}
+
+.blurred-section::after {
+  content: "Please log in to see this section";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  z-index: 10;
+}
 
 .result-container {
   min-height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
-  background: #E2FCD6;
+  font-family: "Segoe UI", sans-serif;
+  background: #e2fcd6;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
 }
 
-.result-cards, .result-section, .macro-grid, .fitness-plan, .meal-grid {
+.result-cards,
+.result-section,
+.macro-grid,
+.fitness-plan,
+.meal-grid {
   width: 100%;
   max-width: 1400px;
   margin-left: auto;
@@ -150,7 +237,7 @@ export default {
 
 .title {
   text-align: center;
-  color: #095D7E;
+  color: #095d7e;
   font-size: 2.5rem;
   margin-bottom: 2.5rem;
   font-weight: 600;
@@ -188,7 +275,7 @@ export default {
 }
 
 .value-box {
-  background: #095D7E;
+  background: #095d7e;
   color: white;
   padding: 0.7rem 1.2rem;
   border-radius: 8px;
@@ -202,7 +289,7 @@ export default {
 }
 
 .result-section h3 {
-  color: #095D7E;
+  color: #095d7e;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -210,7 +297,7 @@ export default {
 }
 
 .result-section h3 i {
-  color: #095D7E;
+  color: #095d7e;
 }
 
 .macro-grid,
@@ -256,7 +343,7 @@ export default {
 
 .macro-box i {
   font-size: 2rem;
-  color: #095D7E;
+  color: #095d7e;
   margin-bottom: 1rem;
 }
 
@@ -268,7 +355,7 @@ export default {
 }
 
 .plan-card h4 {
-  color: #095D7E;
+  color: #095d7e;
   margin-bottom: 1rem;
 }
 
@@ -290,7 +377,7 @@ export default {
 }
 
 .meal-box h4 {
-  color: #095D7E;
+  color: #095d7e;
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -311,7 +398,7 @@ export default {
   gap: 0.5rem;
   margin: 3rem auto 0;
   padding: 1rem 2rem;
-  background: #095D7E;
+  background: #095d7e;
   color: white;
   border: none;
   border-radius: 12px;
@@ -330,21 +417,22 @@ export default {
 
 @media (max-width: 768px) {
   .result-container {
-      padding: 1rem;
-      width: 100vw;
-      overflow-x: hidden;
+    padding: 1rem;
+    width: 100vw;
+    overflow-x: hidden;
   }
 
   .title {
-      font-size: 2rem;
+    font-size: 2rem;
   }
 
   .result-cards {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 
-  .macro-grid, .meal-grid {
-      grid-template-columns: 1fr;
+  .macro-grid,
+  .meal-grid {
+    grid-template-columns: 1fr;
   }
 
 }

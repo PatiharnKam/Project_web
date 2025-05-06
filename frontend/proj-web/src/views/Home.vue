@@ -1,6 +1,5 @@
 <template>
   <div class="home-container bg-[#ccecee]">
-    <NavbarHome />
     <!-- Hero Section with Full Width Slider -->
     <section class="hero-section">
       <!-- Image Slider -->
@@ -86,7 +85,6 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import NavbarHome from '../components/NavbarHome.vue';
 
 const images = [
   new URL('../assets/run4.jpg', import.meta.url).href,

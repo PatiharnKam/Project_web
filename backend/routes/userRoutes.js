@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../controller/userController');
 
 router.post('/cal', User.calculateBMR);
-
+router.post('/check-email', User.checkemail);
 router.route('/')
     .get(User.listAllUsers)
     .post(User.createAUser);
