@@ -1,6 +1,9 @@
 <template>
   <div class="navbar">
-    <div class="logo-text">Healthy</div>
+    <div class="logo">
+      <i class="fas fa-dumbbell dumbbell-icon"></i>
+      <span class="logo-text">Healthy</span>
+    </div>
     <div class="right-section">
       <i class="fa fa-user user-icon"></i>
       <i class="fa fa-sign-out-alt logout-icon"></i>
@@ -28,11 +31,74 @@ export default {
   padding: 0 24px;
   color: white;
   z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeSlideDown 0.5s ease-in-out;
 }
 
 .logo-text {
-  font-size: 1.6rem;
-  font-weight: bold;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 0.5px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0.85));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease;
+}
+
+.logo-text:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+.logo-text:hover::after {
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dumbbell-icon {
+  font-size: 1.8rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover .dumbbell-icon {
+  animation: swingDumbbell 0.6s ease-in-out infinite;
+}
+
+@keyframes swingDumbbell {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-20deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 .right-section {
@@ -58,11 +124,13 @@ export default {
 .logout-icon {
   font-size: 1.6rem;
   cursor: pointer;
+  transition: transform 0.2s, opacity 0.3s;
 }
 
 .user-icon:hover,
 .logout-icon:hover {
-  opacity: 0.7;
+  transform: scale(1.15);
+  opacity: 0.8;
 }
 
 #app {
