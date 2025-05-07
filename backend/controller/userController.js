@@ -152,12 +152,12 @@ exports.calculateBMR = function(req, res) {
     if(Goal === 'maintain-weight') {
         calories_per_day = tdee; 
     } else if(Goal === 'lose-fat') {
-        calories_per_day = tdee - (tdee * 0.2);
+        calories_per_day = tdee - 200;
         if (calories_per_day < bmr){
             calories_per_day = bmr * 1.07; // Ensure not to go below BMR
         } 
     } else if(Goal === 'gain-muscle') {
-        calories_per_day = tdee + (tdee * 0.2); 
+        calories_per_day = tdee + 200; 
     } else {
         return res.status(400).json({ message: "Invalid goal selected" });
     }
