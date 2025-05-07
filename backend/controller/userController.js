@@ -152,7 +152,7 @@ exports.calculateBMR = function(req, res) {
     if(Goal === 'maintain-weight') {
         calories_per_day = tdee; 
     } else if(Goal === 'lose-fat') {
-        calories_per_day = tdee - 200;
+        calories_per_day = tdee - (tdee * 0.2);
         if (calories_per_day < bmr){
             calories_per_day = bmr * 1.07; // Ensure not to go below BMR
         } 
