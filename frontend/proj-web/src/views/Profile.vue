@@ -139,7 +139,12 @@ export default {
   methods: {
     async fetchUserData(userId) {
       try {
-        const res = await axios.get(`http://localhost:3000/users/${userId}`);
+        const token = sessionStorage.getItem("token");
+        const res = await axios.get(`http://localhost:3000/users/${userId}`,{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+        });
         const data = res.data;
         
         this.form = {

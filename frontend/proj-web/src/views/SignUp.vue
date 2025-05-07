@@ -226,37 +226,6 @@ const signUp = async () => {
   }
 };
 
-const signUpWithGoogle = async () => {
-  try {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    const { user } = await signInWithPopup(auth, provider);
-
-    // Check if user already exists
-    try {
-      const response = await axios.post('http://localhost:3000/users/check-email', {
-        Email: user.email
-      });
-      
-      if (!response.data.exists) {
-        await axios.post('http://localhost:3000/users', {
-          Username: user.displayName || user.email.split('@')[0],
-          Email: user.email,
-          Password: 'google-auth'
-        });
-      }
-    } catch (error) {
-      console.error('Error checking/creating user:', error);
-    }
-
-    sessionStorage.setItem('token', await user.getIdToken());
-    sessionStorage.setItem('userid', user.uid);
-    showSuccess('Successfully signed up with Google!');
-    router.push('/cal');
-  } catch (error) {
-    showError('Google sign up failed. Please try again.');
-  }
-};
 </script>
 
 <style scoped>

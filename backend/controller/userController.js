@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = "HelpHealthSecretKey"; // Secret key for JWT signing
+const JWT_SECRET = process.env.JWT_SECRET; // Secret key for JWT signing
 
 exports.listAllUsers = async function(req, res){
     var query = { sort: { firstName: 1 } }
@@ -61,6 +61,7 @@ exports.signInUser = async function(req, res) {
 exports.readAUser = async function(req, res){
     //console.log(req.params.userId)
     try{
+        console.log(req.params.userId)
         let user = await User.findById(req.params.userId)
         res.status(200).json(user);
     } catch (error){
@@ -70,7 +71,6 @@ exports.readAUser = async function(req, res){
 
 exports.deleteAUser = async function(req, res){
     console.log(req.params.userId)
-
     try{
          let user = await User.findByIdAndDelete(req.params.userId)
         const response = {

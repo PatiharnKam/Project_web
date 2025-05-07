@@ -53,70 +53,105 @@
             <div class="plan-card">
               <h4>Cardio</h4>
               <ul>
-                <li>30 minutes of moderate cardio 3-4 times per week</li>
-                <li>Choose from: walking, jogging, cycling, or swimming</li>
+                <template v-if="result.goal === 'lose-fat'">
+                  <li>Do 30 minutes of moderate to high-intensity cardio 3–5 times per week to boost fat burning.</li>
+                  <li>Choose from: walking, jogging, cycling, or swimming</li>
+                </template>
+                <template v-else-if="result.goal === 'gain-muscle'">
+                  <li>Do 30 minutes of moderate-intensity cardio 2–3 times per week to support heart health without interfering with muscle growth.</li>
+                  <li>Choose from: walking, jogging, cycling, or swimming</li>
+                </template>
+                <template v-else>
+                  <li>Do 30 minutes of low-intensity cardio 3–4 times per week to maintain overall fitness and endurance.</li>
+                  <li>Choose from: walking, jogging, cycling, or swimming</li>
+                </template>
               </ul>
             </div>
             <div class="plan-card">
-              <h4>Strength Training</h4>
+              <h4>Weight Training</h4>
               <ul>
-                <li>2-3 strength training sessions per week</li>
-                <li>Focus on compound exercises</li>
+                <template v-if="result.goal === 'lose-fat'">
+                  <li>Train 3-5 days per week to support fat loss and maintain muscle mass.</li>
+                  <li>Focus on compound exercises to burn more calories and engage multiple muscle groups.</li>
+                </template>
+                <template v-else-if="result.goal === 'gain-muscle'">
+                  <li>Train 5-6 days per week to maximize muscle hypertrophy and recovery.</li>
+                  <li>Focus on compound exercises to build overall strength and stimulate muscle growth.</li>
+                </template>
+                <template v-else>
+                  <li>Train 2-3 days per week to maintain your current physique and health.</li>
+                  <li>Focus on compound exercises for efficient full-body stimulation.</li>
+                </template>
+              </ul>
+            </div>
+            <div class="plan-card">
+              <h4>Meal Plan</h4>
+              <ul>
+                <template v-if="result.goal === 'lose-fat'">
+                  Eat less than TDEE but more than BMR to lose Fat.
+                </template>
+                <template v-else-if="result.goal === 'gain-muscle'">
+                  Eat more than your TDEE to build muscle.
+                </template>
+                <template v-else>
+                  Focus on maintaining your current weight and balance macros.
+                </template>
+                <li>
+                  Recommend Calories Per day for your goal is:
+                  {{ result.caloriesPerDay }} kcal
+                </li>
               </ul>
             </div>
           </div>
-        </div>
 
-        <div class="result-section">
-          <h3><i class="fas fa-utensils"></i> Suggested Menu Plan</h3>
-          <div class="meal-grid">
-            <div class="meal-box">
-              <h4>Oatmeal with fruits</h4>
-              <ul>
-                <li>Protein: 51g</li>
-                <li>Carbohydrate: 25g</li>
-                <li>Fat: 5g</li>
-                <li>Calories: 125 kcal</li>
-              </ul>
-              <img src="https://th.bing.com/th/id/OSK.c88176d9956f8129a58f82782ccd204c?w=194&h=129&rs=2&qlt=80&o=6&cdv=1&dpr=1.3&pid=16.1" alt="Oatmeal with fruits" />
-            </div>
-            <div class="meal-box">
-              <h4>Oatmeal with fruits</h4>
-              <ul>
-                <li>Protein: 51g</li>
-                <li>Carbohydrate: 25g</li>
-                <li>Fat: 5g</li>
-                <li>Calories: 125 kcal</li>
-              </ul>
-              <img src="https://th.bing.com/th/id/OSK.c88176d9956f8129a58f82782ccd204c?w=194&h=129&rs=2&qlt=80&o=6&cdv=1&dpr=1.3&pid=16.1" alt="Oatmeal with fruits" />
-            </div>
-            <div class="meal-box">
-              <h4>Oatmeal with fruits</h4>
-              <ul>
-                <li>Protein: 51g</li>
-                <li>Carbohydrate: 25g</li>
-                <li>Fat: 5g</li>
-                <li>Calories: 125 kcal</li>
-              </ul>
-              <img src="https://th.bing.com/th/id/OSK.c88176d9956f8129a58f82782ccd204c?w=194&h=129&rs=2&qlt=80&o=6&cdv=1&dpr=1.3&pid=16.1" alt="Oatmeal with fruits" />
-            </div>
-            <div class="total-calories-box">
-              <i class="fas fa-calculator"></i>
-              <h4>Total Daily Calories</h4>
-              <div class="calories-value">1004 kcal</div>
+          <div class="result-section">
+            <h3 class="menu-header">
+              <i class="fas fa-utensils"></i>
+                Suggested Menu Plan
+              <button class="refresh-btn" @click="fetchRecommendedMeals" title="Refresh Menu">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </h3>
+            <div class="meal-grid">
+              <div
+                class="meal-box"
+                v-for="(meal, index) in result.selectedMeals"
+                :key="index"
+              >
+                <h4>{{ meal.MealName }}</h4>
+                <ul>
+                  <li>Protein: {{ meal.Protein }}g</li>
+                  <li>Carbohydrate: {{ meal.Carbohydrate }}g</li>
+                  <li>Fat: {{ meal.Fat }}g</li>
+                  <li>Calories: {{ meal.Calories }} kcal</li>
+                </ul>
+                <img :src="meal.ImageLink" :alt="meal.MealName" />
+              </div>
+
+              <div class="total-calories-box">
+                <i class="fas fa-calculator"></i>
+                <h4>Total Daily Calories</h4>
+                <div class="calories-value">
+                  {{ result.totalCalories }} kcal
+                </div>
+              </div>
             </div>
           </div>
+          <button class="recalculate-button" @click="recalculateMetrics">
+            <i class="fas fa-redo"></i>
+            Recalculate
+          </button>
+          <button class="download-btn" @click="downloadPDF">
+            <i class="fas fa-download"></i> Download Summary
+          </button>
         </div>
-
-        <button class="download-btn" @click="downloadPDF">
-          <i class="fas fa-download"></i> Download Summary
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "Result",
   data() {
@@ -128,6 +163,9 @@ export default {
         protein: null,
         carbs: null,
         fat: null,
+        goal: null,
+        selectedMeals: [], // เพิ่ม field นี้สำหรับเมนูอาหารที่แนะนำ
+        totalCalories: 0,
       },
     };
   },
@@ -136,11 +174,28 @@ export default {
       return !!sessionStorage.getItem("token");
     },
   },
-  created() {
+  async created() {
     const saved = sessionStorage.getItem("result");
     if (saved) {
       this.result = JSON.parse(saved);
+      await this.fetchRecommendedMeals();
     }
+    // try {
+    //   const res = await axios.post(
+    //     "http://localhost:3000/meals/recommendation",
+    //     {
+    //       minCalories: this.result.bmr,
+    //       maxCalories: this.result.tdee,
+    //       proteinLimit: this.result.protein,
+    //       carbsLimit: this.result.carbs,
+    //       fatLimit: this.result.fat,
+    //     }
+    //   );
+    //   this.result.selectedMeals = res.data.selectedMeals;
+    //   this.result.totalCalories = res.data.total.calories;
+    // } catch (error) {
+    //   console.error("Error fetching recommended meals:", error);
+    // }
   },
   methods: {
     downloadPDF() {
@@ -149,6 +204,29 @@ export default {
     goToSignin() {
       this.$router.push("/signin");
     },
+    recalculateMetrics() {
+      this.$router.push("/cal");
+    },
+    async fetchRecommendedMeals() {
+      try {
+        const res = await axios.post("http://localhost:3000/meals/recommendation", {
+          minCalories: this.result.bmr,
+          maxCalories: this.result.tdee,
+          proteinLimit: this.result.protein,
+          carbsLimit: this.result.carbs,
+          fatLimit: this.result.fat
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        });
+        this.result.selectedMeals = res.data.selectedMeals;
+        this.result.totalCalories = res.data.total.calories;
+      } catch (error) {
+        console.error("Error fetching recommended meals:", error);
+      }
+    }
   },
 };
 </script>
@@ -184,7 +262,6 @@ export default {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(6px);
 }
-
 
 .overlay-box button {
   margin-top: 1rem;
@@ -259,7 +336,7 @@ export default {
 }
 
 .title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -293,17 +370,14 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 
-    0 5px 15px rgba(0, 0, 0, 0.05),
-    0 15px 40px rgba(9, 93, 126, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 40px rgba(9, 93, 126, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(9, 93, 126, 0.1);
 }
 
 .result-card:hover {
   transform: translateY(-5px);
-  box-shadow: 
-    0 8px 25px rgba(9, 93, 126, 0.15),
+  box-shadow: 0 8px 25px rgba(9, 93, 126, 0.15),
     0 20px 48px rgba(9, 93, 126, 0.12);
   border-color: rgba(9, 93, 126, 0.2);
 }
@@ -326,7 +400,7 @@ export default {
   margin-top: 0.5rem;
   text-align: center;
   box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1),
-              0 2px 4px rgba(9, 93, 126, 0.1);
+    0 2px 4px rgba(9, 93, 126, 0.1);
 }
 
 .result-section {
@@ -349,7 +423,7 @@ export default {
 .fitness-plan,
 .meal-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);  /* กำหนดให้มี 3 columns เท่าๆ กัน */
+  grid-template-columns: repeat(3, 1fr); /* กำหนดให้มี 3 columns เท่าๆ กัน */
   gap: 2rem;
   width: 100%;
 }
@@ -360,9 +434,7 @@ export default {
   background: white;
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 
-    0 5px 15px rgba(0, 0, 0, 0.05),
-    0 15px 40px rgba(9, 93, 126, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 40px rgba(9, 93, 126, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(9, 93, 126, 0.1);
   height: 100%;
@@ -373,17 +445,14 @@ export default {
   background: white;
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 
-    0 5px 15px rgba(0, 0, 0, 0.05),
-    0 15px 40px rgba(9, 93, 126, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 40px rgba(9, 93, 126, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(9, 93, 126, 0.1);
 }
 
 .plan-card:hover {
   transform: translateY(-5px);
-  box-shadow: 
-    0 8px 25px rgba(9, 93, 126, 0.15),
+  box-shadow: 0 8px 25px rgba(9, 93, 126, 0.15),
     0 20px 48px rgba(9, 93, 126, 0.12);
   border-color: rgba(9, 93, 126, 0.2);
 }
@@ -498,8 +567,7 @@ export default {
 
 .macro-box:hover {
   transform: translateY(-5px);
-  box-shadow: 
-    0 8px 25px rgba(9, 93, 126, 0.15),
+  box-shadow: 0 8px 25px rgba(9, 93, 126, 0.15),
     0 20px 48px rgba(9, 93, 126, 0.12);
   border-color: rgba(9, 93, 126, 0.2);
 }
@@ -533,16 +601,13 @@ export default {
 
 .meal-box {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
-    0 5px 15px rgba(0, 0, 0, 0.05),
-    0 15px 40px rgba(9, 93, 126, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 40px rgba(9, 93, 126, 0.08);
   border: 1px solid rgba(9, 93, 126, 0.1);
 }
 
 .meal-box:hover {
   transform: translateY(-5px);
-  box-shadow: 
-    0 8px 25px rgba(9, 93, 126, 0.15),
+  box-shadow: 0 8px 25px rgba(9, 93, 126, 0.15),
     0 20px 48px rgba(9, 93, 126, 0.12);
   border-color: rgba(9, 93, 126, 0.2);
 }
@@ -566,9 +631,7 @@ export default {
   background: white;
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 
-    0 5px 15px rgba(0, 0, 0, 0.05),
-    0 15px 40px rgba(9, 93, 126, 0.08);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 15px 40px rgba(9, 93, 126, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(9, 93, 126, 0.1);
   text-align: center;
@@ -576,8 +639,7 @@ export default {
 
 .total-calories-box:hover {
   transform: translateY(-5px);
-  box-shadow: 
-    0 8px 25px rgba(9, 93, 126, 0.15),
+  box-shadow: 0 8px 25px rgba(9, 93, 126, 0.15),
     0 20px 48px rgba(9, 93, 126, 0.12);
   border-color: rgba(9, 93, 126, 0.2);
 }
@@ -614,15 +676,13 @@ export default {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 
-    0 4px 15px rgba(9, 93, 126, 0.15),
+  box-shadow: 0 4px 15px rgba(9, 93, 126, 0.15),
     0 8px 25px rgba(9, 93, 126, 0.1);
 }
 
 .download-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 
-    0 6px 20px rgba(9, 93, 126, 0.2),
+  box-shadow: 0 6px 20px rgba(9, 93, 126, 0.2),
     0 12px 30px rgba(9, 93, 126, 0.15);
   background: #074c66;
 }
@@ -649,227 +709,272 @@ export default {
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 20mm 0 0 0;
+  }
 
-    @page {
-        size: A4;
-        margin: 20mm 0 0 0; 
-    }
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto !important;
+  }
 
-    html,
-    body {
-        width: 210mm;
-        height: 297mm;
-        margin: 0 auto !important;
-    }
+  body * {
+    visibility: hidden;
+  }
 
-    body * {
-        visibility: hidden;
-    }
+  #app > *:not(.result-container) {
+    display: none !important;
+  }
 
-    #app>*:not(.result-container) {
-        display: none !important;
-    }
+  .result-container,
+  .result-container * {
+    visibility: visible !important;
+  }
 
-    .result-container,
-    .result-container * {
-        visibility: visible !important;
-    }
+  .result-container {
+    position: relative !important;
+    width: 180mm !important;
+    margin: 15mm auto !important;
+    padding: 0 !important;
+    background: white !important;
+    box-shadow: none !important;
+    float: none !important;
+  }
 
-    .result-container {
-        position: relative !important;
-        width: 180mm !important;
-        margin: 15mm auto !important;
-        padding: 0 !important;
-        background: white !important;
-        box-shadow: none !important;
-        float: none !important;
-    }
+  .result-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10mm !important;
+    margin-bottom: 15mm !important;
+    width: 100% !important;
+  }
 
-    .result-cards {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10mm !important;
-        margin-bottom: 15mm !important;
-        width: 100% !important;
-    }
+  .macro-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10mm !important;
+    width: 100% !important;
+    margin-bottom: 0 !important;
+  }
 
-    .macro-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 10mm !important;
-        width: 100% !important;
-        margin-bottom: 0 !important; 
-    }
+  .protected-content {
+    page-break-before: always !important;
+    margin-top: 20mm !important;
+  }
 
-    .protected-content {
-        page-break-before: always !important; 
-        margin-top: 20mm !important; 
-    }
+  .result-section {
+    page-break-inside: avoid !important;
+  }
 
-    .result-section {
-        page-break-inside: avoid !important; 
-    }
+  .result-card,
+  .macro-box,
+  .plan-card,
+  .meal-box {
+    background: white !important;
+    border: 1px solid #095d7e !important;
+    box-shadow: none !important;
+    padding: 8mm !important;
+    margin: 0 !important;
+  }
 
-    .result-card,
-    .macro-box,
-    .plan-card,
-    .meal-box {
-        background: white !important;
-        border: 1px solid #095d7e !important;
-        box-shadow: none !important;
-        padding: 8mm !important;
-        margin: 0 !important;
-    }
+  .value-box {
+    background: white !important;
+    color: #095d7e !important;
+    border: 2px solid #095d7e !important;
+    margin-top: 5mm !important;
+  }
 
-    .value-box {
-        background: white !important;
-        color: #095d7e !important;
-        border: 2px solid #095d7e !important;
-        margin-top: 5mm !important;
-    }
+  .title {
+    font-size: 28pt !important;
+    margin-bottom: 15mm !important;
+    color: #095d7e !important;
+  }
 
-    .title {
-        font-size: 28pt !important;
-        margin-bottom: 15mm !important;
-        color: #095d7e !important;
-    }
+  h3 {
+    font-size: 20pt !important;
+    color: #095d7e !important;
+    margin-bottom: 10mm !important;
+  }
 
-    h3 {
-        font-size: 20pt !important;
-        color: #095d7e !important;
-        margin-bottom: 10mm !important;
-    }
+  p,
+  li {
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+  }
 
-    p,
-    li {
-        font-size: 12pt !important;
-        line-height: 1.5 !important;
-    }
+  .download-btn {
+    display: none !important;
+  }
 
-    .download-btn {
-        display: none !important;
-    }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+  @supports (-webkit-appearance: none) {
+    html {
+      background: white !important;
     }
-
-    @supports (-webkit-appearance:none) {
-        html {
-            background: white !important;
-        }
-    }
+  }
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 20mm 0 0 0;
+  }
 
-    @page {
-        size: A4;
-        margin: 20mm 0 0 0; 
-    }
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto !important;
+  }
 
-    html,
-    body {
-        width: 210mm;
-        height: 297mm;
-        margin: 0 auto !important;
-    }
+  body * {
+    visibility: hidden;
+  }
 
-    body * {
-        visibility: hidden;
-    }
+  #app > *:not(.result-container) {
+    display: none !important;
+  }
 
-    #app>*:not(.result-container) {
-        display: none !important;
-    }
+  .result-container,
+  .result-container * {
+    visibility: visible !important;
+  }
 
-    .result-container,
-    .result-container * {
-        visibility: visible !important;
-    }
+  .result-container {
+    position: relative !important;
+    width: 180mm !important;
+    margin: 15mm auto !important;
+    padding: 0 !important;
+    background: white !important;
+    box-shadow: none !important;
+    float: none !important;
+  }
 
-    .result-container {
-        position: relative !important;
-        width: 180mm !important;
-        margin: 15mm auto !important;
-        padding: 0 !important;
-        background: white !important;
-        box-shadow: none !important;
-        float: none !important;
-    }
+  .result-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10mm !important;
+    margin-bottom: 15mm !important;
+    width: 100% !important;
+  }
 
-    .result-cards {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10mm !important;
-        margin-bottom: 15mm !important;
-        width: 100% !important;
-    }
+  .macro-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10mm !important;
+    width: 100% !important;
+    margin-bottom: 0 !important;
+  }
 
-    .macro-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 10mm !important;
-        width: 100% !important;
-        margin-bottom: 0 !important; 
-    }
+  .protected-content {
+    page-break-before: always !important;
+    margin-top: 20mm !important;
+  }
 
-    .protected-content {
-        page-break-before: always !important; 
-        margin-top: 20mm !important; 
-    }
+  .result-section {
+    page-break-inside: avoid !important;
+  }
 
-    .result-section {
-        page-break-inside: avoid !important; 
-    }
+  .result-card,
+  .macro-box,
+  .plan-card,
+  .meal-box {
+    background: white !important;
+    border: 1px solid #095d7e !important;
+    box-shadow: none !important;
+    padding: 8mm !important;
+    margin: 0 !important;
+  }
 
-    .result-card,
-    .macro-box,
-    .plan-card,
-    .meal-box {
-        background: white !important;
-        border: 1px solid #095d7e !important;
-        box-shadow: none !important;
-        padding: 8mm !important;
-        margin: 0 !important;
-    }
+  .value-box {
+    background: white !important;
+    color: #095d7e !important;
+    border: 2px solid #095d7e !important;
+    margin-top: 5mm !important;
+  }
 
-    .value-box {
-        background: white !important;
-        color: #095d7e !important;
-        border: 2px solid #095d7e !important;
-        margin-top: 5mm !important;
-    }
+  .title {
+    font-size: 28pt !important;
+    margin-bottom: 15mm !important;
+    color: #095d7e !important;
+  }
 
-    .title {
-        font-size: 28pt !important;
-        margin-bottom: 15mm !important;
-        color: #095d7e !important;
-    }
+  h3 {
+    font-size: 20pt !important;
+    color: #095d7e !important;
+    margin-bottom: 10mm !important;
+  }
 
-    h3 {
-        font-size: 20pt !important;
-        color: #095d7e !important;
-        margin-bottom: 10mm !important;
-    }
+  p,
+  li {
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+  }
 
-    p,
-    li {
-        font-size: 12pt !important;
-        line-height: 1.5 !important;
-    }
+  .download-btn {
+    display: none !important;
+  }
 
-    .download-btn {
-        display: none !important;
-    }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+  @supports (-webkit-appearance: none) {
+    html {
+      background: white !important;
     }
-
-    @supports (-webkit-appearance:none) {
-        html {
-            background: white !important;
-        }
-    }
+  }
+}
+.recalculate-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 3rem auto 0;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #095D7E;
+  color: white;
 }
 
+.recalculate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 150, 127, 0.2);
+}
+
+.recalculate-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.refresh-btn {
+  background: none;
+  border: none;
+  margin-left: 1rem;
+  cursor: pointer;
+  color: #095d7e;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.refresh-btn:hover {
+  transform: rotate(90deg);
+  color: #14967f;
+}
+.menu-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 </style>

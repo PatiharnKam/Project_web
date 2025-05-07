@@ -69,8 +69,8 @@ exports.updateAMeal = async function(req, res){
 exports.getRecommendedMeals = async (req, res) => {
     try {
       const {
-        caloriesMin,
-        caloriesMax,
+        minCalories,
+        maxCalories,
         proteinLimit,
         carbsLimit,
         fatLimit
@@ -102,7 +102,7 @@ exports.getRecommendedMeals = async (req, res) => {
               fat: combo.reduce((sum, m) => sum + m.Fat, 0)
             };
   
-            if (total.calories < caloriesMin || total.calories > caloriesMax) continue;
+            if (total.calories < minCalories || total.calories > maxCalories) continue;
   
             const diff =
               Math.abs(proteinLimit - total.protein) +

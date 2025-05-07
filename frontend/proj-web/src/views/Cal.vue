@@ -154,7 +154,8 @@ export default {
                 caloriesPerDay: null,
                 protein: null,
                 carbs: null,
-                fat: null
+                fat: null,
+                goal: null
             },
             activeSection: null
         };
@@ -250,7 +251,11 @@ export default {
         async fetchUserData() {
         try {
             const userId = sessionStorage.getItem('userid');
-            const res = await axios.get(`http://localhost:3000/users/${userId}`);
+            const res = await axios.get(`http://localhost:3000/users/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                }
+            });
             const data = res.data;
 
             this.form = {
@@ -294,6 +299,7 @@ export default {
                 this.result.protein = res.data.protein;
                 this.result.carbs = res.data.carbs;
                 this.result.fat = res.data.fat;
+                this.result.goal = this.form.goal;
                 const token = sessionStorage.getItem('token');
                 if (token) {
                   await this.saveUserData();
@@ -327,8 +333,12 @@ export default {
                     TDEE: this.result.tdee,
                     Calories_Perday: this.result.caloriesPerDay,
                 };
-
-                await axios.post(`http://localhost:3000/users/${userId}`, userData);
+                const token = sessionStorage.getItem("token");
+                await axios.post(`http://localhost:3000/users/${userId}`, userData,{
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 this.navigateToResults();
             } catch (error) {
                 console.error('Save user data error:', error);
