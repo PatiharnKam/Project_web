@@ -88,13 +88,20 @@
               <h4>Meal Plan</h4>
               <ul>
                 <template v-if="result.goal === 'lose-fat'">
-                  Eat less than TDEE but more than BMR to lose Fat.
+                  <li>
+                    Eat less than TDEE but more than BMR to lose Fat.
+                  </li>
+                  
                 </template>
                 <template v-else-if="result.goal === 'gain-muscle'">
-                  Eat more than your TDEE to build muscle.
+                  <li>
+                    Eat more than your TDEE to build muscle.
+                  </li>
                 </template>
                 <template v-else>
-                  Focus on maintaining your current weight and balance macros.
+                  <li>
+                    Focus on maintaining your current weight and balance macros.
+                  </li>
                 </template>
                 <li>
                   Recommend Calories Per day for your goal is:

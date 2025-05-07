@@ -193,22 +193,31 @@ export default {
 
             if (!this.isValidTwoDecimal(this.form.height)) {
                 this.errors.height = 'Please enter a valid height.';
-            } else if (parseFloat(this.form.height) > 300 && parseFloat(this.form.height) < 100) {
-                this.errors.height = 'Height cannot exceed.';
+            } else {
+                const height = parseFloat(this.form.height);
+                if (height < 100 || height > 300) {
+                    this.errors.height = 'Height must be between 100-300 cm.';
+                }
             }
 
             if (!this.isValidTwoDecimal(this.form.weight)) {
                 this.errors.weight = 'Please enter a valid weight.';
-            } else if (parseFloat(this.form.weight) > 600 && parseFloat(this.form.weight) < 20) {
-                this.errors.weight = 'Weight cannot exceed 600 kg.';
+            } else {
+                const weight = parseFloat(this.form.weight);
+                if (weight < 20 || weight > 600) {
+                    this.errors.weight = 'Weight must be between 20-600 kg.';
+                }
             }
 
             if (!this.form.gender) this.errors.gender = 'Please select your gender.';
 
             if (!this.isPositiveInteger(this.form.age)) {
                 this.errors.age = 'Please enter a valid age.';
-            } else if (parseInt(this.form.age) > 120 && parseInt(this.form.age) < 10) {
-                this.errors.age = 'Age cannot exceed 120.';
+            } else {
+                const age = parseInt(this.form.age);
+                if (age < 10 || age > 120) {
+                    this.errors.age = 'Age must be between 10-120 years.';
+                }
             }
 
             if (!this.form.formula) this.errors.formula = 'Please choose a BMR formula.';
