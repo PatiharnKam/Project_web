@@ -246,51 +246,6 @@ export default {
     declineTerms() {
       this.formData.acceptAgreement = false;
       this.showTermsModal = false;
-    },
-    signUpWithGoogle() {
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider)
-        .then(async (result) => {
-          const email = result.user.email;
-          const username = email.split('@')[0];
-
-          try {
-            const check = await axios.post('http://localhost:3000/users/check-email', {
-              Email: email
-            });
-
-            if (check.data.exists) {
-              this.toast.error('This email is already registered!', {
-                position: 'top-right',
-                duration: 5000
-              });
-              return;
-            }
-
-            await axios.post('http://localhost:3000/users/', {
-              Username: username,
-              Email: email,
-            });
-
-            this.toast.success('Account created successfully!', {
-              position: 'top-right',
-              duration: 3000
-            });
-            this.$router.push('/signin');
-          } catch (error) {
-            this.toast.error('Sign up failed. Please try again.', {
-              position: 'top-right',
-              duration: 5000
-            });
-          }
-        })
-        .catch((error) => {
-          this.toast.error('Google sign up failed. Please try again.', {
-            position: 'top-right',
-            duration: 5000
-          });
-        });
     }
   },
 
