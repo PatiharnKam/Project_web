@@ -50,56 +50,6 @@
   </div>
 </template>
 
-<<<<<<< Updated upstream
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useToastNotification } from '../composables/useToastNotification';
-
-const router = useRouter();
-const { showSuccess, showError } = useToastNotification();
-
-const formData = ref({
-  email: '',
-  password: ''
-});
-
-const showPassword = ref(false);
-const isLoading = ref(false);
-
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
-
-const signIn = async () => {
-  isLoading.value = true;
-  try {
-    const auth = getAuth();
-    const { user } = await signInWithEmailAndPassword(auth, formData.value.email, formData.value.password);
-    sessionStorage.setItem('token', await user.getIdToken());
-    sessionStorage.setItem('userid', user.uid);
-    showSuccess('Successfully signed in!');
-    router.push('/home');
-  } catch (error) {
-    showError('Sign in failed. Please check your credentials.');
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const signInWithGoogle = async () => {
-  try {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    const { user } = await signInWithPopup(auth, provider);
-    sessionStorage.setItem('token', await user.getIdToken());
-    sessionStorage.setItem('userid', user.uid);
-    showSuccess('Successfully signed in with Google!');
-    router.push('/home');
-  } catch (error) {
-    showError('Google sign in failed. Please try again.');
-=======
 <script>
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import axios from 'axios';
@@ -223,7 +173,6 @@ export default {
           });
         });
     }
->>>>>>> Stashed changes
   }
 };
 </script>
