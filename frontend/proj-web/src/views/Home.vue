@@ -1,6 +1,7 @@
 <template>
   <div class="home-container">
     <section class="hero-section">
+      <!-- setting vueper slider--> 
       <vueper-slides
         class="slider-container"
         :touchable="true"
@@ -25,6 +26,7 @@
         @autoplay-resume="handleAutoplayResume"
         @before-slide="beforeSlide"
       >
+      <!-- vueper Slider with image--> 
         <vueper-slide
           v-for="(image, i) in images"
           :key="i"
@@ -77,7 +79,7 @@
         </div>
       </div>
 
-      <!-- CTA Button -->
+      <!-- start Button for go to cal -->
       <div class="cta-container">
         <router-link to="/cal" class="cta-button">
           Start Your Journey
@@ -93,7 +95,9 @@ import { ref } from 'vue'
 import { VueperSlides, VueperSlide } from 'vueperslides'
 import 'vueperslides/dist/vueperslides.css'
 
+
 const currentSlide = ref(0)
+// Array of images and titles for the slides
 const images = [
   new URL('../assets/run4.jpg', import.meta.url).href,
   new URL('../assets/food1.jpg', import.meta.url).href,
@@ -107,15 +111,15 @@ const titles = [
   'Track Your Progress',
   'Achieve Your Goals'
 ]
-
+// Function to handle autoplay pause
 const handleAutoplayPause = () => {
   console.log('Autoplay paused')
 }
-
+// Function to handle autoplay resume
 const handleAutoplayResume = () => {
   console.log('Autoplay resumed')
 }
-
+// Function to handle before slide transition
 const beforeSlide = (currentSlide) => {
   console.log(`Transitioning to slide ${currentSlide}`)
 }
@@ -141,12 +145,10 @@ const beforeSlide = (currentSlide) => {
   height: 100%;
 }
 
-/* Customize Vueper Slides */
 :deep(.vueperslides) {
   height: 100vh ;
 }
 
-/* Customize dots navigation */
 :deep(.vueperslides__bullets) {
   bottom: 10px ;
   z-index: 10 ;
@@ -203,7 +205,6 @@ const beforeSlide = (currentSlide) => {
   opacity: 0.9;
 }
 
-/* Customize arrow navigation */
 :deep(.vueperslides__arrow) {
   color: white !important;
   background: rgba(255, 255, 255, 0.25) !important;
@@ -367,7 +368,7 @@ const beforeSlide = (currentSlide) => {
 .cta-button:hover i {
   transform: translateX(4px);
 }
-/* Custom bullet styling */
+
 .bullet-custom {
   width: 20px;
   height: 20px;
@@ -383,7 +384,6 @@ const beforeSlide = (currentSlide) => {
   border-color: white;
 }
 
-/* Improve slider touch interaction */
 :deep(.vueperslides__track) {
   cursor: grab;
 }
