@@ -1,10 +1,12 @@
 <template>
   <div class="login-container">
+    <!--Login section -->
     <div class="left-panel">
       <div class="login-content">
         <h2 class="title">Welcome Back</h2>
         <p class="subtitle">Continue your journey to better health</p>
 
+        <!-- Authentication with email/password and Google -->
         <form @submit.prevent="signIn" class="login-form">
           <div class="form-group">
             <label class="form-label">Email*</label>
@@ -39,6 +41,7 @@
         </form>
       </div>
     </div>
+    <!--image section -->
     <div class="right-panel">
       <img src="../assets/food1.jpg" alt="Healthy Food" class="login-image" />
       <div class="overlay"></div>
@@ -64,11 +67,13 @@ export default {
     };
   },
   methods: {
+    // Handle email/password 
     signIn() {
       const auth = getAuth();
       signInWithEmailAndPassword(auth, this.formData.email, this.formData.password)
         .then(async () => {
           try {
+            // Create session after successful Firebase auth
             const res = await axios.post('http://localhost:3000/users/signin', {
               Email: this.formData.email,
             });
@@ -80,6 +85,7 @@ export default {
             });
             this.$router.push('/home');
           } catch (error) {
+             // Handle backend errors
             this.toast.error(error.response?.data?.message || 'Unable to sign in. Please try again.', {
               position: 'top-right',
               duration: 5000
@@ -87,6 +93,7 @@ export default {
           }
         })
         .catch((error) => {
+          // Handle Firebase auth errors
           let errorMessage = 'Sign in failed. Please check your credentials.';
           switch (error.code) {
             case 'auth/wrong-password':
@@ -108,9 +115,11 @@ export default {
           });
         });
     },
+    // Toggle password visibility
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
+    // Handle Google OAuth authentication
     signInWithGoogle() {
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
@@ -119,9 +128,11 @@ export default {
           const email = result.user.email;
           const username = email.split('@')[0];
           try {
+            // Check in backend if user exists
             const check = await axios.post('http://localhost:3000/users/check-email', {
               Email: email
             });
+            // Create new user
             if (!check.data.exists) {
               await axios.post('http://localhost:3000/users/', {
                 Username: username,
@@ -143,6 +154,7 @@ export default {
             });
             this.$router.push('/home');
           } catch (error) {
+            // Handle backend errors during Google sign-in
             this.toast.error('Sign in failed. Please try again.', {
               position: 'top-right',
               duration: 5000
@@ -150,6 +162,7 @@ export default {
           }
         })
         .catch((error) => {
+          // Handle errors during Google OAuth process
           this.toast.error('Google sign in failed. Please try again.', {
             position: 'top-right',
             duration: 5000

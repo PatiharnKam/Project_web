@@ -137,6 +137,7 @@ export default {
     };
   },
   methods: {
+    // get user data from the server
     async fetchUserData(userId) {
       try {
         const token = sessionStorage.getItem("token");
@@ -158,9 +159,11 @@ export default {
           goal: data.Goal || ''
         };
       } catch (error) {
+        /// Handle error appropriately
         console.error('Error fetching user data:', error);
       }
     },
+    // Recalculate metrics and navigate to the calculation page
     async recalculateMetrics() {
       try {
         await this.$router.push('/cal');
@@ -169,6 +172,7 @@ export default {
       }
     }
   },
+  // Lifecycle hook to fetch user data when the component is created
   watch: {
     '$route.params.userId': {
       immediate: true,

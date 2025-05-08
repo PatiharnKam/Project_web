@@ -159,41 +159,48 @@ export default {
             },
             activeSection: null
         };
-    },
+    },// get user data from the server
     created() {
       this.fetchUserData();
     },
     mounted() {
+        // animate the calculator content on mount
         requestAnimationFrame(() => {
             this.activeSection = 'basic';
             document.querySelector('.calculator-content').classList.add('show');
         });
     },
     methods: {
+        //check if the input is a valid number with two decimal places
         isValidTwoDecimal(val) {
             return /^\d+(\.\d{1,2})?$/.test(val) && parseFloat(val) > 0;
         },
+        //check if the input is a positive integer
         isPositiveInteger(val) {
             return /^\d+$/.test(val) && parseInt(val) > 0;
         },
+        //limit the input to two decimal places
         limitToTwoDecimalPlaces(event, field) {
             let raw = event.target.value;
             const match = raw.match(/^\d*\.?\d{0,2}/);
             event.target.value = match ? match[0] : '';
             this.form[field] = event.target.value;
         },
+        //filter the input to allow only integers
         filterIntegerInput(event, field) {
             let raw = event.target.value.replace(/\D/g, '');
             if (raw !== '' && parseInt(raw) === 0) raw = '';
             event.target.value = raw;
             this.form[field] = raw;
         },
+        // check if the form is valid
         validateForm() {
             this.errors = {};
 
             if (!this.isValidTwoDecimal(this.form.height)) {
                 this.errors.height = 'Please enter a valid height.';
             } else {
+                // Check if height is within the range of 100-300 cm
                 const height = parseFloat(this.form.height);
                 if (height < 100 || height > 300) {
                     this.errors.height = 'Height must be between 100-300 cm.';
@@ -203,6 +210,7 @@ export default {
             if (!this.isValidTwoDecimal(this.form.weight)) {
                 this.errors.weight = 'Please enter a valid weight.';
             } else {
+                // Check if weight is within the range of 20-600 kg
                 const weight = parseFloat(this.form.weight);
                 if (weight < 20 || weight > 600) {
                     this.errors.weight = 'Weight must be between 20-600 kg.';
@@ -212,20 +220,22 @@ export default {
             if (!this.form.gender) this.errors.gender = 'Please select your gender.';
 
             if (!this.isPositiveInteger(this.form.age)) {
+                // Check if age is a positive integer
                 this.errors.age = 'Please enter a valid age.';
             } else {
+                // Check if age is within the range of 10-120 years
                 const age = parseInt(this.form.age);
                 if (age < 10 || age > 120) {
                     this.errors.age = 'Age must be between 10-120 years.';
                 }
             }
-
+            // Check if the formula is not selected
             if (!this.form.formula) this.errors.formula = 'Please choose a BMR formula.';
-
+            // Check if the activity level is not selected
             if (!this.form.activity) this.errors.activity = 'Please select your activity level.';
-
+            // Check if the goal is not selected
             if (!this.form.goal) this.errors.goal = 'Please select your goal.';
-
+            // Check if the body fat percentage is valid
             if (this.form.bodyFat !== '') {
                 if (!this.isValidTwoDecimal(this.form.bodyFat)) {
                     this.errors.bodyFat = 'Please enter a valid body fat percentage.';
@@ -235,14 +245,14 @@ export default {
             } else if (this.form.formula === 'Katch-McArdle') {
                 this.errors.bodyFat = 'Please enter your Body fat %.';
             }
-
+            // if errors exist, shake the error fields
             if (Object.keys(this.errors).length > 0) {
                 this.shakeErrorFields();
             }
 
             return Object.keys(this.errors).length === 0;
         },
-
+        // shake the error fields
         shakeErrorFields() {
             setTimeout(() => {
                 const errorFields = document.querySelectorAll('.error');
@@ -257,6 +267,7 @@ export default {
                 });
             }, 100);
         },
+        // get user data from the server
         async fetchUserData() {
         try {
             const userId = sessionStorage.getItem('userid');
@@ -278,9 +289,11 @@ export default {
                 goal: data.Goal || ''
             };
         } catch (error) {
+            // Handle error server response
             console.error('Error fetching user data:', error);
         }
         },
+        // calculate the BMR and TDEE
         async calculate() {
             if (!this.validateForm()) return;
 
@@ -309,10 +322,12 @@ export default {
                 this.result.carbs = res.data.carbs;
                 this.result.fat = res.data.fat;
                 this.result.goal = this.form.goal;
+                // if logged in, save the user data
                 const token = sessionStorage.getItem('token');
                 if (token) {
                   await this.saveUserData();
                 }
+                // navigate to the results page
                 this.navigateToResults();
             } catch (error) {
                 console.error('Calculation error:', error);
@@ -322,6 +337,7 @@ export default {
                 button.innerHTML = 'Calculate <i class="fas fa-calculator"></i>';
             }
         },
+        // save the user data to the server
         async saveUserData() {
             try {
                 const userId = sessionStorage.getItem('userid');
@@ -343,6 +359,7 @@ export default {
                     Calories_Perday: this.result.caloriesPerDay,
                 };
                 const token = sessionStorage.getItem("token");
+                // Check if token is available
                 await axios.post(`http://localhost:3000/users/${userId}`, userData,{
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -354,6 +371,7 @@ export default {
                 alert('Error saving your data: ' + (error.response && error.response.data ? error.response.data.message : error.message));
             }
         },
+        // navigate to the results page
         navigateToResults() {
             try {
                 document.querySelector('.calculator-content').classList.add('slide-out');

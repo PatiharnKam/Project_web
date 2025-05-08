@@ -2,7 +2,7 @@
   <div class="result-container">
     <br /><br />
     <h2 class="title">Your Nutrition Summary</h2>
-
+    <!-- Display BMR -->
     <div class="result-cards">
       <div class="result-card">
         <i class="fas fa-fire"></i>
@@ -11,7 +11,7 @@
           <div class="value-box">{{ result.bmr }} kcal</div>
         </div>
       </div>
-
+      <!-- Display TDEE -->
       <div class="result-card">
         <i class="fas fa-running"></i>
         <div class="card-content">
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-
+    <!-- Display Daily Macro Nutrients -->
     <div class="result-section">
       <h3><i class="fas fa-chart-pie"></i> Daily Macro Nutrients</h3>
       <div class="macro-grid">
@@ -41,6 +41,7 @@
         </div>
       </div>
     </div>
+    <!-- Blur if not loggin In -->
     <div class="protected-wrapper">
       <div v-if="!isLoggedIn" class="overlay-box">
         <p>Please sign in to see this section</p>
@@ -51,6 +52,7 @@
           <h3><i class="fas fa-dumbbell"></i> Recommended Fitness Plan</h3>
           <div class="fitness-plan">
             <div class="plan-card">
+              <!-- Display Cardio Plan -->
               <h4>Cardio</h4>
               <ul>
                 <template v-if="result.goal === 'lose-fat'">
@@ -68,6 +70,7 @@
               </ul>
             </div>
             <div class="plan-card">
+              <!-- Display Weight Training Plan -->
               <h4>Weight Training</h4>
               <ul>
                 <template v-if="result.goal === 'lose-fat'">
@@ -85,6 +88,7 @@
               </ul>
             </div>
             <div class="plan-card">
+              <!-- Display Meal Plan -->
               <h4>Meal Plan</h4>
               <ul>
                 <template v-if="result.goal === 'lose-fat'">
@@ -114,6 +118,7 @@
           <div class="result-section">
             <h3 class="menu-header">
               <i class="fas fa-utensils"></i>
+              <!-- Display Recommended Meals -->
                 Suggested Menu Plan
               <button class="refresh-btn" @click="fetchRecommendedMeals" title="Refresh Menu">
                 <i class="fas fa-sync-alt"></i>
@@ -177,6 +182,7 @@ export default {
     };
   },
   computed: {
+    // Check if user is logged in
     isLoggedIn() {
       return !!sessionStorage.getItem("token");
     },
@@ -185,35 +191,25 @@ export default {
     const saved = sessionStorage.getItem("result");
     if (saved) {
       this.result = JSON.parse(saved);
+      // get recommended meals
       await this.fetchRecommendedMeals();
     }
-    // try {
-    //   const res = await axios.post(
-    //     "http://localhost:3000/meals/recommendation",
-    //     {
-    //       minCalories: this.result.bmr,
-    //       maxCalories: this.result.tdee,
-    //       proteinLimit: this.result.protein,
-    //       carbsLimit: this.result.carbs,
-    //       fatLimit: this.result.fat,
-    //     }
-    //   );
-    //   this.result.selectedMeals = res.data.selectedMeals;
-    //   this.result.totalCalories = res.data.total.calories;
-    // } catch (error) {
-    //   console.error("Error fetching recommended meals:", error);
-    // }
+    
   },
   methods: {
+    // Download the summary as a PDF
     downloadPDF() {
       window.print();
     },
+    // Redirect to sign-in page
     goToSignin() {
       this.$router.push("/signin");
     },
+    // Recalculate metrics and redirect to the calculation page
     recalculateMetrics() {
       this.$router.push("/cal");
     },
+    // get recommended meals from the server
     async fetchRecommendedMeals() {
       try {
         const res = await axios.post("http://localhost:3000/meals/recommendation", {
@@ -921,7 +917,9 @@ export default {
     line-height: 1.5 !important;
   }
 
-  .download-btn {
+  .download-btn,
+  .recalculate-button,
+  .refresh-btn {
     display: none !important;
   }
 
@@ -936,6 +934,7 @@ export default {
     }
   }
 }
+
 .recalculate-button {
   display: flex;
   align-items: center;

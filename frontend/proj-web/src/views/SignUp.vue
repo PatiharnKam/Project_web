@@ -1,14 +1,16 @@
 <template>
   <div class="signup-page">
+    <!-- Background image -->
     <div class="left-panel">
       <img src="../assets/run4.jpg" alt="Fitness" class="fitness-image" />
       <div class="overlay"></div>
     </div>
+    <!-- Registration form -->
     <div class="right-panel">
       <div class="signup-content">
         <h2 class="title">Create Account</h2>
         <p class="subtitle">Join us on your journey to better health</p>
-
+        <!-- Registration form with validation -->
         <form @submit.prevent="signUp" class="signup-form">
           <div class="form-group">
             <label class="form-label">Username*</label>
@@ -39,7 +41,7 @@
               </button>
             </div>
           </div>
-
+          <!-- Terms and conditions checkbox -->
           <div class="agreement">
             <label class="checkbox-container">
               <input type="checkbox" v-model="formData.acceptAgreement" required />
@@ -162,6 +164,7 @@ export default {
     };
   },
   methods: {
+    // Function to handle sign-up
     async signUp() {
       if (this.formData.password !== this.formData.confirmPassword) {
         this.toast.error('Passwords do not match. Please make sure both passwords are the same.', {
@@ -170,6 +173,7 @@ export default {
         });
         return;
       }
+      // check if password is at least 6 characters long
       if (this.formData.password.length < 6) {
         this.toast.error('Password must be at least 6 characters long.', {
           position: 'top-right',
@@ -178,7 +182,7 @@ export default {
         return;
       }
       try {
-        // ตรวจสอบอีเมลซ้ำก่อน
+        // check if email already exists in the backend
         const checkEmail = await axios.post('http://localhost:3000/users/check-email', {
           Email: this.formData.email
         });
@@ -191,9 +195,11 @@ export default {
           return;
         }
 
+        // create user in Firebase
         const auth = getAuth();
         await createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password);
         
+        // create user in database
         await axios.post('http://localhost:3000/users/', {
           Username: this.formData.username,
           Email: this.formData.email,
@@ -236,9 +242,11 @@ export default {
         });
       }
     },
+    // show terms and conditions modal
     showTerms() {
       this.showTermsModal = true;
     },
+    // accept or decline terms and conditions
     acceptTerms() {
       this.formData.acceptAgreement = true;
       this.showTermsModal = false;
