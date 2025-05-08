@@ -56,5 +56,4 @@ var UserSchema = new Schema({
 })
 
 module.exports = mongoose.model('UserInfo', UserSchema, 'UserInfo')
-//ต้องตั้งข้อมูลให้ตรงกับข้อมูลในฐานข้อมูล
-//ต้องตั้งชื่อฐานข้อมูลให้ตรงกับชื่อฐานข้อมูลที่เราสร้างไว้
+//เลือก collection ที่จะใช้ใน MongoDB เป็น 'UserInfo'

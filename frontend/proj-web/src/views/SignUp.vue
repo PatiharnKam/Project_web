@@ -24,7 +24,7 @@
             <label class="form-label">Password*</label>
             <div class="password-field">
               <input :type="showPassword ? 'text' : 'password'" v-model="formData.password" class="form-input" placeholder="Enter your password" required />
-              <button type="button" class="toggle-password" @click="togglePassword('password')">
+              <button type="button" class="toggle-password" @click="showPassword = !showPassword">
                 <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
               </button>
             </div>
@@ -34,7 +34,7 @@
             <label class="form-label">Confirm Password*</label>
             <div class="password-field">
               <input :type="showConfirmPassword ? 'text' : 'password'" v-model="formData.confirmPassword" class="form-input" placeholder="Confirm your password" required />
-              <button type="button" class="toggle-password" @click="togglePassword('confirmPassword')">
+              <button type="button" class="toggle-password" @click="showConfirmPassword = !showConfirmPassword">
                 <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
               </button>
             </div>
@@ -42,9 +42,9 @@
 
           <div class="agreement">
             <label class="checkbox-container">
-              <input type="checkbox" v-model="acceptedTerms" required />
+              <input type="checkbox" v-model="formData.acceptAgreement" required />
               <span class="checkmark"></span>
-              <span class="agreement-text" @click="toggleTerms">I accept the Terms and Privacy Policy</span>
+              <span class="agreement-text" @click="showTerms">I accept the Terms and Privacy Policy</span>
             </label>
           </div>
 
@@ -61,11 +61,11 @@
     </div>
 
     <!-- Terms Modal -->
-    <div class="modal" v-if="showTerms">
+    <div class="modal" v-if="showTermsModal">
       <div class="modal-content">
         <div class="modal-header">
           <h3>Terms of Use and Privacy Policy</h3>
-          <button class="close-btn" @click="toggleTerms">&times;</button>
+          <button class="close-btn" @click="showTermsModal = false">&times;</button>
         </div>
         <div class="modal-body">
           <div class="terms-section">
@@ -128,104 +128,174 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="accept-btn" @click="toggleTerms">Accept</button>
-          <button class="decline-btn" @click="toggleTerms">Decline</button>
+          <button class="accept-btn" @click="acceptTerms">Accept</button>
+          <button class="decline-btn" @click="declineTerms">Decline</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+<script>
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+
+
 import axios from 'axios';
-import { useToastNotification } from '../composables/useToastNotification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+import { useToast } from 'vue-toast-notification';
 
-const router = useRouter();
-const { showSuccess, showError, showWarning } = useToastNotification();
-
-const formData = ref({
-  username: '',
-  email: '',
-  password: '',
-  confirmPassword: ''
-});
-
-const showPassword = ref(false);
-const showConfirmPassword = ref(false);
-const acceptedTerms = ref(false);
-const showTerms = ref(false);
-
-const togglePassword = (field) => {
-  if (field === 'password') {
-    showPassword.value = !showPassword.value;
-  } else {
-    showConfirmPassword.value = !showConfirmPassword.value;
-  }
-};
-
-const toggleTerms = () => {
-  showTerms.value = !showTerms.value;
-};
-
-watch(() => formData.value.email, async (newEmail) => {
-  if (newEmail) {
-    try {
-      const response = await axios.post('http://localhost:3000/users/check-email', {
-        Email: newEmail
-      });
-      if (response.data.exists) {
-        showWarning('This email is already registered.');
+export default {
+  name: 'SignUp',
+  data() {
+    return {
+      formData: {
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        acceptAgreement: false,
+      },
+      showPassword: false,
+      showConfirmPassword: false,
+      showTermsModal: false,
+      toast: useToast()
+    };
+  },
+  methods: {
+    async signUp() {
+      if (this.formData.password !== this.formData.confirmPassword) {
+        this.toast.error('Passwords do not match. Please make sure both passwords are the same.', {
+          position: 'top-right',
+          duration: 5000
+        });
+        return;
       }
-    } catch (error) {
-      console.error('Error checking email:', error);
+      if (this.formData.password.length < 6) {
+        this.toast.error('Password must be at least 6 characters long.', {
+          position: 'top-right',
+          duration: 5000
+        });
+        return;
+      }
+      try {
+        // ตรวจสอบอีเมลซ้ำก่อน
+        const checkEmail = await axios.post('http://localhost:3000/users/check-email', {
+          Email: this.formData.email
+        });
+
+        if (checkEmail.data.exists) {
+          this.toast.error('This email is already registered. Please use a different email or try signing in.', {
+            position: 'top-right',
+            duration: 5000
+          });
+          return;
+        }
+
+        const auth = getAuth();
+        await createUserWithEmailAndPassword(auth, this.formData.email, this.formData.password);
+        
+        await axios.post('http://localhost:3000/users/', {
+          Username: this.formData.username,
+          Email: this.formData.email,
+        });
+
+        this.toast.success('Account created successfully!', {
+          position: 'top-right',
+          duration: 3000
+        });
+        this.$router.push('/signin');
+      } catch (error) {
+        let errorMessage = 'Sign up failed.';
+        
+        // จัดการ Firebase Auth errors
+        if (error.code) {
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'This email is already registered. Please use a different email or try signing in.';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Please enter a valid email address.';
+              break;
+            case 'auth/operation-not-allowed':
+              errorMessage = 'Email/password accounts are not enabled. Please contact support.';
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'Password is too weak. Please choose a stronger password.';
+              break;
+            default:
+              errorMessage = error.message;
+          }
+        } else if (error.response?.data?.message) {
+          // จัดการ Backend errors
+          errorMessage = error.response.data.message;
+        }
+
+        this.toast.error(errorMessage, {
+          position: 'top-right',
+          duration: 5000
+        });
+      }
+    },
+    showTerms() {
+      this.showTermsModal = true;
+    },
+    acceptTerms() {
+      this.formData.acceptAgreement = true;
+      this.showTermsModal = false;
+    },
+    declineTerms() {
+      this.formData.acceptAgreement = false;
+      this.showTermsModal = false;
+    },
+    signUpWithGoogle() {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
+        .then(async (result) => {
+          const email = result.user.email;
+          const username = email.split('@')[0];
+
+          try {
+            const check = await axios.post('http://localhost:3000/users/check-email', {
+              Email: email
+            });
+
+            if (check.data.exists) {
+              this.toast.error('This email is already registered!', {
+                position: 'top-right',
+                duration: 5000
+              });
+              return;
+            }
+
+            await axios.post('http://localhost:3000/users/', {
+              Username: username,
+              Email: email,
+            });
+
+            this.toast.success('Account created successfully!', {
+              position: 'top-right',
+              duration: 3000
+            });
+            this.$router.push('/signin');
+          } catch (error) {
+            this.toast.error('Sign up failed. Please try again.', {
+              position: 'top-right',
+              duration: 5000
+            });
+          }
+        })
+        .catch((error) => {
+          this.toast.error('Google sign up failed. Please try again.', {
+            position: 'top-right',
+            duration: 5000
+          });
+        });
     }
-  }
-});
+  },
 
-const validateForm = () => {
-  if (!formData.value.username || !formData.value.email || !formData.value.password || !formData.value.confirmPassword) {
-    showError('Please fill in all required fields.');
-    return false;
-  }
 
-  if (formData.value.password !== formData.value.confirmPassword) {
-    showError('Passwords do not match.');
-    return false;
-  }
-
-  if (!acceptedTerms.value) {
-    showError('Please accept the terms and conditions.');
-    return false;
-  }
-
-  return true;
 };
-
-const signUp = async () => {
-  if (!validateForm()) return;
-
-  try {
-    const auth = getAuth();
-    const { user } = await createUserWithEmailAndPassword(auth, formData.value.email, formData.value.password);
-    
-    await axios.post('http://localhost:3000/users', {
-      Username: formData.value.username,
-      Email: formData.value.email,
-      Password: formData.value.password
-    });
-
-    sessionStorage.setItem('token', await user.getIdToken());
-    sessionStorage.setItem('userid', user.uid);
-    showSuccess('Successfully signed up!');
-    router.push('/singin');
-  } catch (error) {
-    showError('Sign up failed. Please try again.');
-  }
-};
-
 </script>
 
 <style scoped>

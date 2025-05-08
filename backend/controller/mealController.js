@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Meal = require('../models/mealModel');
 
+// List all meals
 exports.listAllMeals = async function(req, res){
     var query = { sort: { firstName: 1 } }
     try{
@@ -12,7 +13,8 @@ exports.listAllMeals = async function(req, res){
     }
 }
 
-exports.createAMeal = async function(req, res) {
+// Create new meals
+exports.createMeals = async function(req, res) {
     try {
         if (Array.isArray(req.body)) {
             // กรณีส่งหลายเมนู
@@ -29,6 +31,7 @@ exports.createAMeal = async function(req, res) {
     }
 }
 
+// Read a meal by ID
 exports.readAMeal = async function(req, res){
     try{
         let meal = await Meal.findById(req.params.mealId)
@@ -38,6 +41,7 @@ exports.readAMeal = async function(req, res){
     }
 }
 
+// Delete a meal by ID
 exports.deleteAMeal = async function(req, res){
     console.log(req.params.mealId)
 
@@ -53,6 +57,7 @@ exports.deleteAMeal = async function(req, res){
     }
 }
 
+// Update a meal by ID
 exports.updateAMeal = async function(req, res){
     var newmeal = {}
     newmeal = req.body
@@ -66,6 +71,7 @@ exports.updateAMeal = async function(req, res){
 }
 ;
 
+// Get เมนูอาหารที่แนะนำ จากข้อมูลของผู้ใช้
 exports.getRecommendedMeals = async (req, res) => {
     try {
       const {
@@ -75,7 +81,8 @@ exports.getRecommendedMeals = async (req, res) => {
         carbsLimit,
         fatLimit
       } = req.body;
-  
+      
+      // ดึงข้อมูลเมนูอาหารทั้งหมดเฉพาที่ต้องการ
       const meals = await Meal.find({}, {
         MealName: 1,
         Calories: 1,
@@ -89,19 +96,23 @@ exports.getRecommendedMeals = async (req, res) => {
         return res.status(400).json({ message: 'Not enough meals in the database' });
       }
   
-      let combos = [];
-  
+      let combos = []; // ใช้เก็บชุดอาหารที่เป็นไปได้
+    
+      // loop เพื่อสร้างชุดอาหารที่เป็นไปได้ทั้งหมด โดยเลือก 3 เมนูมารวมกัน
       for (let i = 0; i < meals.length - 2; i++) {
         for (let j = i + 1; j < meals.length - 1; j++) {
           for (let k = j + 1; k < meals.length; k++) {
+
             const combo = [meals[i], meals[j], meals[k]];
+
             const total = {
               calories: combo.reduce((sum, m) => sum + m.Calories, 0),
               protein: combo.reduce((sum, m) => sum + m.Protein, 0),
               carbs: combo.reduce((sum, m) => sum + m.Carbohydrate, 0),
               fat: combo.reduce((sum, m) => sum + m.Fat, 0)
             };
-  
+            
+            // ข้ามชุดที่อยู่นอกช่วงแคลอรี่ที่กำหนด
             if (total.calories < minCalories || total.calories > maxCalories) continue;
   
             const diff =
@@ -121,9 +132,12 @@ exports.getRecommendedMeals = async (req, res) => {
       if (combos.length === 0) {
         return res.status(404).json({ message: 'No meal combinations found within the calorie range.' });
       }
-  
+      
+      // เรียงลำดับ combos ตามค่า diff จากน้อยไปมาก
       combos.sort((a, b) => a.diff - b.diff);
+      // เลือกชุด top 10% (หรืออย่างน้อย 5 ชุด) ที่ดีที่สุด
       const topCombos = combos.slice(0, Math.max(5, Math.floor(combos.length * 0.1)));
+      // สุ่มเลือก 1 ชุดจาก topCombos ที่ใกล้เคียงที่สุด
       const randomPick = topCombos[Math.floor(Math.random() * topCombos.length)];
   
       res.status(200).json({
