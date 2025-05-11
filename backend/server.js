@@ -30,13 +30,6 @@ const mealRoutes = require('./routes/mealRoutes');
 app.use('/users', userRoutes);
 app.use('/meals', mealRoutes);
 
-console.log("asfsdagdsag")
-
-console.log("asdgsadgsadgsadg")
 app.listen(port, () => {
     console.log(`🚀 Server is running on port ${port}`);
 });
-
-console.log("asfsdagdsag")
-
-console.log("asdgsadgsadgsadg")
