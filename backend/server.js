@@ -34,5 +34,3 @@ app.listen(port, () => {
 });
 
 console.log("asfsdagdsag")
-console.log("testgit")
-console.log("test2")
