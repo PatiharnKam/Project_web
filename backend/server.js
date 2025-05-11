@@ -1,41 +1,34 @@
-var cors = require('cors')
-var mongoose = require('mongoose')
-var express = require('express')
-var app = express()
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-app.use(cors())
+require('dotenv').config();
+const cors = require('cors');
+const mongoose = require('mongoose');
+const express = require('express');
 
-port = process.env.PORT || 3000
+const app = express();
+const port = process.env.PORT || 3000;
 
-User = require('./models/userListModel')
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-mongoose.Promise = global.Promise
-// mongoose.connect('mongodb://127.0.0.1:27017/Userdb', function(err) {
-//     if (err) {
-//         console.log('Error in Mongoose connection')
-//         throw err
-//     }
-//     console.log('Mongoose connected')
-// }
-// )
+// Connect MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ Connected to MongoDB Atlas"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-async function connectDB() {
-    try {
-      await mongoose.connect('mongodb://127.0.0.1:27017/Userdb', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log('Database connected successfully');
-    } catch (error) {
-      console.error('Database connection error:', error);
-    }
-  }
-  
-connectDB();
+mongoose.connection.on('connected', () => {
+    console.log('Connected to MongoDB:', mongoose.connection.name);
+});
+mongoose.connection.on('error', (err) => {
+    console.log('MongoDB connection error:', err);
+});
 
+// Routes
+const userRoutes = require('./routes/userRoutes');
+const mealRoutes = require('./routes/mealRoutes');
 
-var routes = require('./routes/userListRoutes')
-routes(app)
-app.listen(port)
-console.log('User list server started on: ' + port)
+app.use('/users', userRoutes);
+app.use('/meals', mealRoutes);
+
+app.listen(port, () => {
+    console.log(`🚀 Server is running on port ${port}`);
+});
